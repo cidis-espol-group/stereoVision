@@ -1,0 +1,153 @@
+import React, { useState } from 'react';
+import Dropdown from './Dropdown.jsx';
+
+const FileUploadContent = ({ onContinue, robot, setRobot }) => {
+  const [imgLeftPreview, setImgLeftPreview] = useState(null);
+  const [imgRightPreview, setImgRightPreview] = useState(null);
+
+  const handleFileChange = (event, setPreview, storageKey) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result;
+        setPreview(base64String);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(storageKey, base64String);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrop = (event, setPreview, storageKey) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result;
+        setPreview(base64String);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(storageKey, base64String);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('robot', robot);
+
+    try {
+      const response = await fetch('', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('Upload successful');
+        onContinue();
+      } else {
+        console.error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <div className="p-8">
+      <div className="mb-4">
+        <Dropdown
+          label="Robot:"
+          options={['Waiter', 'Cleaner', 'Guard']}
+          onChange={(e) => setRobot(e.target.value)}
+        />
+      </div>
+      <div className="flex justify-center mb-6">
+        <div className="w-1/2 text-center">
+          <p className="mb-2 font-bold">LEFT</p>
+          <div
+            className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
+            onDrop={(e) => handleDrop(e, setImgLeftPreview, 'leftImage')}
+            onDragOver={handleDragOver}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, setImgLeftPreview, 'leftImage')}
+              className="hidden"
+              id="imgLeft"
+            />
+            <label htmlFor="imgLeft" className="cursor-pointer">
+              {imgLeftPreview ? (
+                <img src={imgLeftPreview} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <div>
+                  <p>Drag and drop your files here to upload</p>
+                  <p className="mt-2">OR</p>
+                  <button
+                    type="button"
+                    className="mt-4 bg-gray-300 text-black px-4 py-2 rounded"
+                    onClick={() => document.getElementById('imgLeft').click()}
+                  >
+                    Browse Files
+                  </button>
+                </div>
+              )}
+            </label>
+          </div>
+        </div>
+        <div className="w-1/2 text-center ml-4">
+          <p className="mb-2 font-bold">RIGHT</p>
+          <div
+            className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
+            onDrop={(e) => handleDrop(e, setImgRightPreview, 'rightImage')}
+            onDragOver={handleDragOver}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e, setImgRightPreview, 'rightImage')}
+              className="hidden"
+              id="imgRight"
+            />
+            <label htmlFor="imgRight" className="cursor-pointer">
+              {imgRightPreview ? (
+                <img src={imgRightPreview} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <div>
+                  <p>Drag and drop your files here to upload</p>
+                  <p className="mt-2">OR</p>
+                  <button
+                    type="button"
+                    className="mt-4 bg-gray-300 text-black px-4 py-2 rounded"
+                    onClick={() => document.getElementById('imgRight').click()}
+                  >
+                    Browse Files
+                  </button>
+                </div>
+              )}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <button
+          onClick={handleSubmit}
+          className="mt-4 bg-gray-300 text-black w-52 px-4 py-2 rounded-full"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default FileUploadContent;

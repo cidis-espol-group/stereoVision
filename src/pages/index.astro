@@ -1,0 +1,16 @@
+---
+import PointCloudViewer from '../components/PointCloudViewer';
+import Layout from '../layouts/Layout.astro';
+import Module from '../components/Module.astro';
+import SettingsButton from '../components/SettingsButton';
+
+const url = 'Molino.glb';
+---
+
+<Layout title='Home'>
+    <SettingsButton client:load/>
+    <Module/>
+    <!-- <PointCloudViewer client:load/> -->
+</Layout>
+
+
