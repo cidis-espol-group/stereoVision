@@ -33,7 +33,7 @@ const PointCloud = ({points, colors, filePath, position = [0, 0, 0], size = 1, s
     geometry = useMemo(() => {
       const pointCount = points.length;
 
-      const positions = new Float32Array(points.pointCloud.length === pointCount * 3 ? points.pointCloud : pointCount * 3);
+      const positions = new Float32Array(points.pointCloud);
       
       const colorsArray = new Float32Array(points.colors.length === pointCount * 3 ? points.colors : pointCount * 3);
   
