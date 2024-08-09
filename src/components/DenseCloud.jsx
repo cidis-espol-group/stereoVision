@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import ThreeDViewer from './PointCloudViewer';
 import PointCloudViewer from './PointCloudViewer';
 
-const DenseCloud = () => {
+const DenseCloud = (pointCloud, colors) => {
   const [leftImage, setLeftImage] = useState(null);
   const [rightImage, setRightImage] = useState(null);
-
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const leftImage = localStorage.getItem('leftImage');
@@ -29,7 +30,7 @@ const DenseCloud = () => {
       window.location.reload(); // Recargar la página para reflejar los cambios
     }
   };
-
+  
   return (
     <div className="p-8">
       <div className="flex justify-center mb-6">
@@ -65,7 +66,14 @@ const DenseCloud = () => {
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold">DENSE POINT CLOUD</h2>
         <div className="bg-gray-100 border border-gray-400 p-8 rounded-md">
-          <PointCloudViewer/>
+          {/* <PointCloudViewer/> */}
+          {/* <ThreeDViewer pointCloud={pointCloud} colors={colors}/> */}
+          {/* <PointCloudViewer points={pointCloud} colors={colors} size={10} shape='circle' color='blue' /> */}
+          {pointCloud && colors ? (
+            <PointCloudViewer pointCloud={pointCloud} colors={colors} />
+          ) : (
+            <p>Loading point cloud...</p>
+          )}
         </div>
       </div>
       <div className="text-center">

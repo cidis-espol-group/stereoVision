@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.3.0",
     "astro": "^4.13.1",
     "cesium": "^1.120.0",
+    "ndarray": "^1.0.19",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "stereovision": "file:",
