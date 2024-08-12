@@ -10,10 +10,12 @@ const FileUpload = ({ onContinue }) => {
   const handleFileChange = (event, setPreview, setImage, storageKey) => {
     const file = event.target.files[0];
     if (file) {
+      
       setImage(file)
       const reader = new FileReader();
       reader.onload = () => {
         const base64String = reader.result;
+        
         setPreview(base64String);
         if (typeof window !== 'undefined') {
           localStorage.setItem(storageKey, base64String);
@@ -49,19 +51,23 @@ const FileUpload = ({ onContinue }) => {
       return;
     }
     const formData = new FormData();
-  
+    
+    
     formData.append('img_left', imgLeft); // leftImageFile es el archivo
     formData.append('img_right', imgRight); // rightImageFile es el archivo
     formData.append('profile_name', 'MATLAB');
     formData.append('method', 'SELECTIVE');
-    console.log('Sending request data:', formData);
+    // formData.append('use_roi', false);
+    
 
-    fetch('https://01q87rn1-8000.use2.devtunnels.ms/generate_point_cloud/nodense/complete', {
+    fetch('https://01q87rn1-8000.use2.devtunnels.ms/generate_point_cloud/dense/', {
       method: 'POST',
       body:formData
     })
     .then(response => response.json())
     .then(data => {
+      console.log(data);
+      
       onContinue(data.point_cloud, data.colors);
     })
     .catch(error => console.error('Error fetching point cloud:', error)); 

@@ -1,5 +1,5 @@
 ---
-import Config from '../components/Config';
+
 import Layout from '../layouts/Layout.astro';
 
 const moduleParam = Astro.url.searchParams.get('module');
@@ -16,5 +16,5 @@ const moduleParam = Astro.url.searchParams.get('module');
           </svg>
         </a>
     </div>
-    <Config client:load/>
+    
 </Layout>
