@@ -77,7 +77,10 @@ const FileUpload = ({url, onContinue }) => {
       console.log(data);
       onContinue(data.point_cloud, data.colors);
     })
-    .catch(error => console.error('Error fetching point cloud:', error)); 
+    .catch(error => {
+      console.error('Error fetching point cloud:', error)
+      window.location.reload()
+    }); 
   };
 
   const handleDropdownChange = (profile) => {

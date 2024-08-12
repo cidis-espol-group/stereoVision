@@ -17,7 +17,7 @@ const Tabs = ({ module }) => {
   useEffect(() => {
     switch (module) {
       case 'dense-point-cloud':
-        setUrl('https://01q87rn1-8000.use2.devtunnels.ms/generate_point_cloud/dense/use_max_disparity=false&normalize=true');
+        setUrl('https://01q87rn1-8000.use2.devtunnels.ms/generate_point_cloud/dense/?use_max_disparity=false&normalize=true');
         break;
       case 'height-estimation':
         setUrl('https://01q87rn1-8000.use2.devtunnels.ms');
