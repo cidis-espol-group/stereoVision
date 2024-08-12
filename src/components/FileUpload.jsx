@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import Dropdown from './Dropdown.jsx';
+import Robots from './Robots.jsx';
 
-const FileUpload = ({ onContinue }) => {
+const FileUpload = ({url, onContinue }) => {
   const [imgLeftPreview, setImgLeftPreview] = useState(null);
   const [imgRightPreview, setImgRightPreview] = useState(null);
   const [imgLeft, setImgLeft] = useState(null)
   const [imgRight, setImgRight] = useState(null)
+  const [profile, setProfile] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleFileChange = (event, setPreview, setImage, storageKey) => {
     const file = event.target.files[0];
@@ -49,36 +52,62 @@ const FileUpload = ({ onContinue }) => {
     if (!imgLeft || !imgRight) {
       alert('Please upload both left and right images.');
       return;
+    } else if (!profile) {
+      alert('Please select a robot profile.');
+      return;
     }
-    const formData = new FormData();
+    console.log(url);
     
+    let formData = new FormData();
     
+    setLoading(true)
     formData.append('img_left', imgLeft); // leftImageFile es el archivo
     formData.append('img_right', imgRight); // rightImageFile es el archivo
-    formData.append('profile_name', 'MATLAB');
+    formData.append('profile_name', profile);
     formData.append('method', 'SELECTIVE');
-    // formData.append('use_roi', false);
     
+    console.log('Sending request data:',Object.fromEntries(formData))
 
-    fetch('https://01q87rn1-8000.use2.devtunnels.ms/generate_point_cloud/dense/', {
+    fetch(url, {
       method: 'POST',
       body:formData
     })
     .then(response => response.json())
     .then(data => {
       console.log(data);
-      
       onContinue(data.point_cloud, data.colors);
     })
     .catch(error => console.error('Error fetching point cloud:', error)); 
   };
 
+  const handleDropdownChange = (profile) => {
+    setProfile(profile);
+    console.log('Selected Robot:', profile);
+  };
+
   return (
     <div className="p-8">
-      <div className="mb-4">
-        <Dropdown label="Robot:" options={['Waiter', 'Cleaner', 'Guard']} />
+
+      <div className={`flex flex-col h-screen justify-center items-center ${loading ? 'visible' : 'hidden'}`}>
+          <div className="flex-row ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity="0.25"/>
+              <path fill="#14788E" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z">
+                <animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/>
+              </path>
+            </svg>
+          </div>
+          
+          <div className="flex-row">
+            <span className='text-xl'>Loading point cloud...</span>
+          </div>
+        
       </div>
-      <div className="flex justify-center mb-6">
+
+      <div className={`mb-4 ${!loading ? 'visible' : 'hidden'}`}>
+        <Robots onRobotSelect={handleDropdownChange}/>
+      </div>
+      <div className={`flex justify-center mb-6 ${!loading ? 'visible' : 'hidden'}`}>
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
           <div
@@ -146,7 +175,7 @@ const FileUpload = ({ onContinue }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className={`flex justify-center ${!loading ? 'visible' : 'hidden'}`}>
         <button
           onClick={handleContinue}
           className="mt-4 bg-gray-300 text-black w-52 px-4 py-2 rounded-full"

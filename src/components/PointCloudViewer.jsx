@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
 import { Points } from '@react-three/drei';
 
-const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size = 1 }) => {
+const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size = 0.001 }) => {
   let geometry = null;
 
   if (filePath) {
@@ -49,7 +49,7 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size = 1 }
   );
 };
 
-function PointCloudViewer({ pointCloud, colors }) {
+function PointCloudViewer({ pointCloud, colors, size, filePath }) {
   const [cloudData, setCloudData] = useState({ pointCloud: null, colors: null });
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function PointCloudViewer({ pointCloud, colors }) {
       camera={{ position: [0, 0, -2500], near: 0.1, far: 100000 }} // Rotación 180 grados en Z
       style={{ height: '100vh' }}
     >
-      <PointCloud points={points_res} colors={color_res} size={0.001} />
+      <PointCloud points={points_res} colors={color_res} size={size} />
       <OrbitControls 
         enableDamping 
         dampingFactor={0.25} 
