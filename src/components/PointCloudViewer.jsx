@@ -44,7 +44,7 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size = 0.0
       material={material}
       position={position}
       rotation={[0, 0, 0]}
-      scale={[1, 1, -1]}
+      scale={[1, 1, 1]}
     />
   );
 };

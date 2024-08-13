@@ -1,14 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown.jsx';
 import Robots from './Robots.jsx';
+import Checkbox from './Checkbox.jsx';
 
-const FileUpload = ({url, onContinue }) => {
+const FileUpload = ({module, onContinue }) => {
   const [imgLeftPreview, setImgLeftPreview] = useState(null);
   const [imgRightPreview, setImgRightPreview] = useState(null);
+
   const [imgLeft, setImgLeft] = useState(null)
   const [imgRight, setImgRight] = useState(null)
   const [profile, setProfile] = useState(null)
+  const [method, setMethod] = useState(null)
+
+  const [checkboxes, setCheckboxes] = useState({
+    useRoi: true,
+    useMaxDisp: true,
+    normalize: true,
+  });
+
+  const [url, setUrl] = useState('')
   const [loading, setLoading] = useState(false)
+
+
+  useEffect(() => {
+    const base = 'https://01q87rn1-8000.use2.devtunnels.ms/';
+    let generatedUrl = '';
+    switch (module) {
+      case 'dense-point-cloud':
+        generatedUrl = `${base}generate_point_cloud/dense/?use_max_disparity=${checkboxes.useMaxDisp}&normalize=${checkboxes.normalize}`;
+        break;
+      case 'height-estimation':
+        generatedUrl = base;
+        break;
+      case 'no-dense-point-cloud':
+        generatedUrl = `${base}generate_point_cloud/nodense/complete/?use_roi=${checkboxes.useRoi}&use_max_disparity=${checkboxes.useMaxDisp}&normalize=${checkboxes.normalize}`;
+        break;
+      case 'feature-extraction':
+        generatedUrl = base;
+        break;
+      default:
+        generatedUrl = '';
+        break;
+    }
+    setUrl(generatedUrl);
+  }, [module, checkboxes]);
+  
+
 
   const handleFileChange = (event, setPreview, setImage, storageKey) => {
     const file = event.target.files[0];
@@ -64,7 +101,7 @@ const FileUpload = ({url, onContinue }) => {
     formData.append('img_left', imgLeft); // leftImageFile es el archivo
     formData.append('img_right', imgRight); // rightImageFile es el archivo
     formData.append('profile_name', profile);
-    formData.append('method', 'SELECTIVE');
+    formData.append('method', method);
     
     console.log('Sending request data:',Object.fromEntries(formData))
 
@@ -88,6 +125,13 @@ const FileUpload = ({url, onContinue }) => {
     console.log('Selected Robot:', profile);
   };
 
+  const handleCheckboxChange = (name, isChecked) => {
+    setCheckboxes(prevState => ({
+      ...prevState,
+      [name]: isChecked,
+    }));
+  };
+
   return (
     <div className="p-8">
 
@@ -107,8 +151,13 @@ const FileUpload = ({url, onContinue }) => {
         
       </div>
 
-      <div className={`mb-4 ${!loading ? 'visible' : 'hidden'}`}>
+      <div className={`flex justify-between content-center mb-4 ${!loading ? 'visible' : 'hidden'}`}>
         <Robots onRobotSelect={handleDropdownChange}/>
+        {/* <Dropdown label='Method' options={['SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)}/> */}
+        <Dropdown label="Method" options={['SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
+        <Checkbox label="Use max disparity" checked={checkboxes.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
+        <Checkbox label="Normalize" checked={checkboxes.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
+        <Checkbox label="Use ROI"checked={checkboxes.useRoi}onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
       </div>
       <div className={`flex justify-center mb-6 ${!loading ? 'visible' : 'hidden'}`}>
         <div className="w-1/2 text-center">

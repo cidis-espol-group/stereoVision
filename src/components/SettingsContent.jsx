@@ -13,12 +13,16 @@ const SettingsContent = ({ onContinue }) => {
       return;
     } 
     const selectedSettings = { profile, fps, resolution };
+
+    console.log(selectedSettings);
+    
+    
     onContinue(selectedSettings);
   };
 
-  const handleDropdownChange = (profile) => {
-    setProfile(profile);
-    console.log('Selected Robot:', profile);
+  const handleDropdownChange = (value, setValue) => {
+    setValue(value)
+    console.log(`Selected ${value}:`, value);
   };
 
 
@@ -28,8 +32,8 @@ const SettingsContent = ({ onContinue }) => {
       <div className="flex flex-col items-center">
         <Robots onRobotSelect={setProfile}/>
         {/* <Dropdown label="Robot" options={['Waiter', 'Cleaner', 'Guard']} value={robot} onChange={setRobot} /> */}
-        <Dropdown label="FPS" options={['30', '60', '120']} value={fps} onChange={setFps} />
-        <Dropdown label="Resolution" options={['1920×1080', '1280×720', '640×480']} value={resolution} onChange={setResolution} />
+        <Dropdown label="FPS" options={["5", "10", "15", "20", "30"]} value={fps} onChange={e => setFps(e.target.value)} />
+        <Dropdown label="Resolution" options={["1920x1080", "1280x720", "800x600", "640x480", "320x240"]} value={resolution} onChange={e => setResolution(e.target.value)} />
         <button onClick={handleContinue} className="mt-4 w-52 bg-gray-300 text-black px-4 py-2 rounded-full">
           Continue
         </button>
