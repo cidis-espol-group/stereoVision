@@ -1,0 +1,16 @@
+---
+interface Props {
+  label: String;
+  ref: String;
+}
+
+const { label } = Astro.props;
+const { ref } = Astro.props;
+---
+    <a class="flex flex-col items-center bg-white p-4 rounded-lg shadow-md hover:shadow-xl" href=`${ref}`>
+      <div class="p-5">
+        <slot/>
+      </div>
+      <span class="text-lg font-semibold text-center">{ label }</span>
+    </a>
+

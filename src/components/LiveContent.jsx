@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { sendPostRequest, showVisualStore } from "../shared/apiService";
+import Button from './utils/Button';
+import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 
-const LiveContent = ({ settings }) => {
+const LiveContent = ({ module, settings }) => {
   const leftVideoRef = useRef(null);
   const rightVideoRef = useRef(null);
   const leftCanvasRef = useRef(null);
@@ -16,7 +19,7 @@ const LiveContent = ({ settings }) => {
     
     const constraints = {
       video: {
-        width: { ideal: width },
+        width: { ideal: width * 2 }, // Duplicar el ancho para la cámara estereoscópica
         height: { ideal: height },
         frameRate: { ideal: Number(fps) },
       },
@@ -24,15 +27,8 @@ const LiveContent = ({ settings }) => {
     
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
-        const videoTracks = stream.getVideoTracks();
-        if (videoTracks.length >= 2) {
-          leftVideoRef.current.srcObject = new MediaStream([videoTracks[0]]);
-          rightVideoRef.current.srcObject = new MediaStream([videoTracks[1]]);
-        } else {
-          console.error('La cámara estereoscópica no proporciona dos transmisiones de video');
-          leftVideoRef.current.srcObject = stream;
-          rightVideoRef.current.srcObject = stream;
-        }
+        leftVideoRef.current.srcObject = stream;
+        rightVideoRef.current.srcObject = stream;
       })
       .catch((error) => {
         console.error('Error al acceder a la cámara:', error);
@@ -49,67 +45,101 @@ const LiveContent = ({ settings }) => {
   }, [settings]);
 
   const captureImage = () => {
+    const leftVideo = leftVideoRef.current;
     const leftCanvas = leftCanvasRef.current;
     const rightCanvas = rightCanvasRef.current;
-    const leftVideo = leftVideoRef.current;
-    const rightVideo = rightVideoRef.current;
+    const { videoWidth, videoHeight } = leftVideo;
 
-    // Configura el canvas con las dimensiones del video
-    leftCanvas.width = leftVideo.videoWidth;
-    leftCanvas.height = leftVideo.videoHeight;
-    rightCanvas.width = rightVideo.videoWidth;
-    rightCanvas.height = rightVideo.videoHeight;
+    // Configura el canvas con las dimensiones del video original (mitad del ancho total)
+    leftCanvas.width = videoWidth / 2;
+    leftCanvas.height = videoHeight;
+    rightCanvas.width = videoWidth / 2;
+    rightCanvas.height = videoHeight;
 
-    // Dibuja los fotogramas actuales del video en el canvas
-    leftCanvas.getContext('2d').drawImage(leftVideo, 0, 0, leftCanvas.width, leftCanvas.height);
-    rightCanvas.getContext('2d').drawImage(rightVideo, 0, 0, rightCanvas.width, rightCanvas.height);
+    // Dibuja las partes izquierda y derecha del video en los respectivos canvas
+    leftCanvas.getContext('2d').drawImage(leftVideo, 0, 0, leftCanvas.width, leftCanvas.height, 0, 0, leftCanvas.width, leftCanvas.height);
+    rightCanvas.getContext('2d').drawImage(leftVideo, leftCanvas.width, 0, rightCanvas.width, rightCanvas.height, 0, 0, rightCanvas.width, rightCanvas.height);
 
     // Convierte el canvas a una imagen en base64
     const leftImage = leftCanvas.toDataURL('image/png');
     const rightImage = rightCanvas.toDataURL('image/png');
+
+    leftImgPreview.set(leftImage)
+    rightImgPreview.set(rightImage)
+
+    // if (typeof window !== 'undefined') {
+    //   localStorage.setItem('leftImage', leftImage);
+    //   localStorage.setItem('rightImage', rightImage);
+    //   localStorage.setItem('updated from', 'LiveContent')
+    // }
+    
+    // Convierte las imágenes base64 a blobs
+    const leftBlob = dataURLToBlob(leftImage);
+    const rightBlob = dataURLToBlob(rightImage);
+
+    // Crea archivos a partir de los blobs
+    const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
+    const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
     // Almacena las imágenes capturadas en el estado
     setCapturedImages({
       left: leftImage,
       right: rightImage,
     });
+    const { profile } = settings;
+
+    showVisualStore.set(true)
+    
+    // Crear FormData y añadir los archivos
+    let formData = new FormData();
+    formData.append('img_left', leftFile);
+    formData.append('img_right', rightFile);
+    formData.append('profile_name', profile);
+    formData.append('method', 'SELECTIVE');
+
+    console.log('Sending request data:', Object.fromEntries(formData));
+    
+    let parameters = {
+      useRoi: false,
+      useMaxDisp: true,
+      normalize: true,
+    };
+
+    sendPostRequest(formData, module, parameters);
+  };
+
+  const dataURLToBlob = (dataURL) => {
+    const byteString = atob(dataURL.split(',')[1]);
+    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
   };
 
   return (
-    <div className="p-8">
+    <div className={"p-8 "}>
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
-          <video ref={leftVideoRef} autoPlay className="bg-black w-full h-64"></video>
+          <div style={{ width: '50%', overflow: 'hidden', position: 'relative' }}>
+            <video ref={leftVideoRef} autoPlay style={{ width: '200%', height: 'auto', objectFit: 'cover', objectPosition: 'left', }}></video>
+          </div>
           <canvas ref={leftCanvasRef} className="hidden"></canvas>
         </div>
         <div className="w-1/2 text-center ml-4">
           <p className="mb-2 font-bold">RIGHT</p>
-          <video ref={rightVideoRef} autoPlay className="bg-black w-full h-64"></video>
+          <div style={{ width: '50%', overflow: 'hidden', position: 'relative' }}>
+            <video ref={rightVideoRef} autoPlay style={{ width: '200%', height: 'auto', objectFit: 'cover', objectPosition: 'right', }}></video>
+          </div>
           <canvas ref={rightCanvasRef} className="hidden"></canvas>
         </div>
       </div>
       <div className="flex justify-center mb-6">
-        <button
-          onClick={captureImage}
-          className="mt-4 bg-gray-300 text-black w-52 px-4 py-2 rounded-full"
-        >
-          Capture
-        </button>
+        <Button label={'Capture'} onClick={captureImage}/>
       </div>
-
-      {capturedImages.left && capturedImages.right && (
-        <div className="flex justify-center mt-6">
-          <div className="w-1/2 text-center">
-            <p className="mb-2 font-bold">Captured LEFT Image</p>
-            <img src={capturedImages.left} alt="Captured Left" className="w-full h-auto" />
-          </div>
-          <div className="w-1/2 text-center ml-4">
-            <p className="mb-2 font-bold">Captured RIGHT Image</p>
-            <img src={capturedImages.right} alt="Captured Right" className="w-full h-auto" />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

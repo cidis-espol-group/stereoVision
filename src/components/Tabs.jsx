@@ -1,50 +1,28 @@
 import React, { useState, useEffect  } from 'react';
-import SettingsContent from './SettingsContent';
+import LiveSettings from './LiveSettings';
 import LiveContent from './LiveContent';
-import DenseCloud from './DenseCloud';
 import FileUpload from './FileUpload';
-import NoDenseCloud from './NoDenseCloud';
+import { useStore } from '@nanostores/react';
+import { activeTabStore, showContentStore } from '../shared/tabStore';
+import { responseStore } from '../shared/response';
+import { showVisualStore } from '../shared/apiService';
 
 const Tabs = ({ module }) => {
   const tabs = ['LIVE', 'FILE'];
-  const [activeTab, setActiveTab] = useState('LIVE');
-  const [showContent, setShowContent] = useState(true);
-  const [settings, setSettings] = useState({ fps: '30', resolution: '1920×1080' });
-  const [pointCloud, setPointCloud] = useState(null);
-  const [colors, setColors] = useState(null);
-  const [url, setUrl] = useState(null);
 
-  
+  //TODO: Revisar si la variable settins se usa LiveContent
+  const [settings, setSettings] = useState({ fps: '30', resolution: '1920×1080' });
+
+  const activeTab = useStore(activeTabStore);
+  const showContent = useStore(showContentStore);
+  const showVisualization = useStore(showVisualStore);
 
   const handleContinue = (selectedSettings) => {
     setSettings(selectedSettings);
-    setShowContent(false);
-  };
-
-  const handleUploadContinue = (generatedPointCloud, generatedColors) => {
-    setPointCloud(generatedPointCloud);
-    setColors(generatedColors);
-    
-    setShowContent(false);
-  };
-
-  const renderModuleContent = () => {
-    switch (module) {
-      case 'dense-point-cloud':
-        return <DenseCloud pointCloud={pointCloud} colors={colors}/>;
-      case 'height-estimation':
-        return <HeightEstimation />;
-      case 'no-dense-point-cloud':
-        return <NoDenseCloud pointCloud={pointCloud} colors={colors}/>
-      case 'feature-extraction':
-        return <HeightEstimation />;
-      default:
-        return null;
-    }
   };
 
   return (
-    <div className='my-10'>
+    <div className={`my-10 ${showVisualization && activeTab =='FILE' ? 'hidden': 'visible'}`}>
       {showContent ? (
         <div className="flex justify-center mb-4">
           {tabs.map((tab, index) => (
@@ -53,7 +31,10 @@ const Tabs = ({ module }) => {
               className={`px-10 py-1 font-bold ${activeTab === tab ? 'bg-[#14788E] text-white' : 'bg-gray-300'} 
                 ${index === 0 ? 'rounded-l-lg' : ''} 
                 ${index === tabs.length - 1 ? 'rounded-r-lg' : ''}`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                activeTabStore.set(tab)
+                responseStore.set(null)
+              }}
             >
               {tab}
             </button>
@@ -62,15 +43,15 @@ const Tabs = ({ module }) => {
       ) : null}
       {showContent ? (
         activeTab === 'LIVE' ? (
-          <SettingsContent onContinue={handleContinue} />
+          <LiveSettings onContinue={handleContinue} />
         ) : (
-          <FileUpload module={module} onContinue={handleUploadContinue} />
+          <FileUpload module={module} />
         )
       ) : (
         activeTab === 'LIVE' ? (
-          <LiveContent settings={settings} />
+          <LiveContent module={module} settings={settings} />
         ) : (
-          renderModuleContent()
+          showVisualization.set(true)
         )
       )}
     </div>

@@ -3,9 +3,17 @@ import Dropdown from './Dropdown';
 
 const Robots = ({ onRobotSelect }) => {
   const [robots, setRobots] = useState([]);
+  const apiKey = import.meta.env.API_KEY;
 
+  //TODO: Cambiar función de fetch a shared/api
   useEffect(() => {
-    fetch('https://01q87rn1-8000.use2.devtunnels.ms/get_profiles/')
+    fetch('http://127.0.0.1:8000/get_profiles/',{
+      headers: {
+        'Authorization':`Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      }
+    }
+    )
       .then(response => response.json())
       .then(data => setRobots(data.map(robot => robot.name))) // Extrae solo los nombres
       .catch(error => console.error('Error fetching profiles:', error));

@@ -13,8 +13,9 @@ const Checkbox = ({ label, checked, onChange,className }) => {
         checked={checked}
         onChange={handleCheckboxChange}
         className="mr-2"
+        id={label}
       />
-      <label>{label}</label>
+      <label htmlFor={label} >{label}</label>
     </div>
   );
 };
