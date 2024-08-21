@@ -4,14 +4,54 @@ import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 
 const LiveContent = ({ module, settings }) => {
+  const videoRef = useRef(null);
   const leftVideoRef = useRef(null);
   const rightVideoRef = useRef(null);
   const leftCanvasRef = useRef(null);
   const rightCanvasRef = useRef(null);
-  const [capturedImages, setCapturedImages] = useState({
-    left: null,
-    right: null,
-  });
+
+  const initializeStream = (videoElement, canvas, outputVideo, isLeft) => {
+    if (!canvas || !outputVideo) return;
+    
+    const drawVideoOnCanvas = () => {
+      if (canvas && videoElement) {
+        const { videoWidth, videoHeight } = videoElement;
+        canvas.width = videoWidth / 2;
+        canvas.height = videoHeight;
+
+        const ctx = canvas.getContext('2d');
+        
+        // Dibuja solo la mitad izquierda del video
+        // if (isLeft) {
+        //   ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);          
+        // } else {
+        //   ctx.drawImage(videoElement, canvas.width, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+        // }
+        if (isLeft) {
+          // Invertir el eje Y
+          ctx.translate(0, canvas.height);
+          ctx.scale(1, -1);
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+          ctx.setTransform(1, 0, 0, 1, 0, 0);          
+        } else {
+          ctx.translate(0, canvas.height);
+          ctx.scale(1, -1);
+          ctx.drawImage(videoElement, canvas.width, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
+        requestAnimationFrame(drawVideoOnCanvas);
+      }
+    };
+
+    drawVideoOnCanvas();
+
+    // Captura el nuevo stream desde el canvas
+    const newStream = canvas.captureStream();
+
+    outputVideo.srcObject = newStream;
+    outputVideo.play();
+  };
 
   useEffect(() => {
     const { fps, resolution } = settings;
@@ -27,12 +67,18 @@ const LiveContent = ({ module, settings }) => {
     
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
-        leftVideoRef.current.srcObject = stream;
-        rightVideoRef.current.srcObject = stream;
+        // leftVideoRef.current.srcObject = stream;
+        // rightVideoRef.current.srcObject = stream;
+        videoRef.current.srcObject = stream;
+        if (leftCanvasRef.current && rightCanvasRef.current && videoRef.current) {
+          initializeStream(videoRef.current, leftCanvasRef.current, leftVideoRef.current, true);
+          initializeStream(videoRef.current, rightCanvasRef.current, rightVideoRef.current, false);
+        }
       })
-      .catch((error) => {
-        console.error('Error al acceder a la cámara:', error);
-      });
+      // .catch((error) => {
+      //   console.error('Error al acceder a la cámara:', error);
+      // });
+
 
     return () => {
       if (leftVideoRef.current && leftVideoRef.current.srcObject) {
@@ -41,6 +87,9 @@ const LiveContent = ({ module, settings }) => {
       if (rightVideoRef.current && rightVideoRef.current.srcObject) {
         rightVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
       }
+      if (videoRef.current && videoRef.current.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+      }
     };
   }, [settings]);
 
@@ -48,17 +97,17 @@ const LiveContent = ({ module, settings }) => {
     const leftVideo = leftVideoRef.current;
     const leftCanvas = leftCanvasRef.current;
     const rightCanvas = rightCanvasRef.current;
-    const { videoWidth, videoHeight } = leftVideo;
+    // const { videoWidth, videoHeight } = leftVideo;
 
-    // Configura el canvas con las dimensiones del video original (mitad del ancho total)
-    leftCanvas.width = videoWidth / 2;
-    leftCanvas.height = videoHeight;
-    rightCanvas.width = videoWidth / 2;
-    rightCanvas.height = videoHeight;
+    // // Configura el canvas con las dimensiones del video original (mitad del ancho total)
+    // leftCanvas.width = videoWidth / 2;
+    // leftCanvas.height = videoHeight;
+    // rightCanvas.width = videoWidth / 2;
+    // rightCanvas.height = videoHeight;
 
-    // Dibuja las partes izquierda y derecha del video en los respectivos canvas
-    leftCanvas.getContext('2d').drawImage(leftVideo, 0, 0, leftCanvas.width, leftCanvas.height, 0, 0, leftCanvas.width, leftCanvas.height);
-    rightCanvas.getContext('2d').drawImage(leftVideo, leftCanvas.width, 0, rightCanvas.width, rightCanvas.height, 0, 0, rightCanvas.width, rightCanvas.height);
+    // // Dibuja las partes izquierda y derecha del video en los respectivos canvas
+    // leftCanvas.getContext('2d').drawImage(leftVideo, 0, 0, leftCanvas.width, leftCanvas.height, 0, 0, leftCanvas.width, leftCanvas.height);
+    // rightCanvas.getContext('2d').drawImage(leftVideo, leftCanvas.width, 0, rightCanvas.width, rightCanvas.height, 0, 0, rightCanvas.width, rightCanvas.height);
 
     // Convierte el canvas a una imagen en base64
     const leftImage = leftCanvas.toDataURL('image/png');
@@ -67,12 +116,6 @@ const LiveContent = ({ module, settings }) => {
     leftImgPreview.set(leftImage)
     rightImgPreview.set(rightImage)
 
-    // if (typeof window !== 'undefined') {
-    //   localStorage.setItem('leftImage', leftImage);
-    //   localStorage.setItem('rightImage', rightImage);
-    //   localStorage.setItem('updated from', 'LiveContent')
-    // }
-    
     // Convierte las imágenes base64 a blobs
     const leftBlob = dataURLToBlob(leftImage);
     const rightBlob = dataURLToBlob(rightImage);
@@ -82,10 +125,10 @@ const LiveContent = ({ module, settings }) => {
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
     // Almacena las imágenes capturadas en el estado
-    setCapturedImages({
-      left: leftImage,
-      right: rightImage,
-    });
+    // setCapturedImages({
+    //   left: leftImage,
+    //   right: rightImage,
+    // });
     const { profile } = settings;
 
     showVisualStore.set(true)
@@ -121,19 +164,17 @@ const LiveContent = ({ module, settings }) => {
 
   return (
     <div className={"p-8 "}>
+      <video ref={videoRef} autoPlay style={{display:'none'}}></video>
+
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
-          <div style={{ width: '50%', overflow: 'hidden', position: 'relative' }}>
-            <video ref={leftVideoRef} autoPlay style={{ width: '200%', height: 'auto', objectFit: 'cover', objectPosition: 'left', }}></video>
-          </div>
+          <video ref={leftVideoRef} autoPlay className='h-full w-full'></video>
           <canvas ref={leftCanvasRef} className="hidden"></canvas>
         </div>
         <div className="w-1/2 text-center ml-4">
           <p className="mb-2 font-bold">RIGHT</p>
-          <div style={{ width: '50%', overflow: 'hidden', position: 'relative' }}>
-            <video ref={rightVideoRef} autoPlay style={{ width: '200%', height: 'auto', objectFit: 'cover', objectPosition: 'right', }}></video>
-          </div>
+          <video ref={rightVideoRef} autoPlay className='h-full w-full'></video>
           <canvas ref={rightCanvasRef} className="hidden"></canvas>
         </div>
       </div>
