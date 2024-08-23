@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { sendPostRequest, showVisualStore } from "../shared/apiService";
+import { loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 
@@ -9,6 +9,8 @@ const LiveContent = ({ module, settings }) => {
   const rightVideoRef = useRef(null);
   const leftCanvasRef = useRef(null);
   const rightCanvasRef = useRef(null);
+  const [width, setWidth] = useState(null)
+  const [height, setHeight] = useState(null)
 
   const initializeStream = (videoElement, canvas, outputVideo, isLeft) => {
     if (!canvas || !outputVideo) return;
@@ -27,15 +29,15 @@ const LiveContent = ({ module, settings }) => {
         // } else {
         //   ctx.drawImage(videoElement, canvas.width, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
         // }
-        if (isLeft) {
+        if (!isLeft) {
           // Invertir el eje Y
-          ctx.translate(0, canvas.height);
-          ctx.scale(1, -1);
+          ctx.translate(canvas.width, canvas.height);
+          ctx.scale(-1, -1);
           ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
           ctx.setTransform(1, 0, 0, 1, 0, 0);          
         } else {
-          ctx.translate(0, canvas.height);
-          ctx.scale(1, -1);
+          ctx.translate(canvas.width, canvas.height);
+          ctx.scale(-1, -1);
           ctx.drawImage(videoElement, canvas.width, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
           ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
@@ -56,6 +58,8 @@ const LiveContent = ({ module, settings }) => {
   useEffect(() => {
     const { fps, resolution } = settings;
     const [width, height] = resolution.toString().split('×').map(Number);
+    setWidth(width);
+    setHeight(height)
     
     const constraints = {
       video: {
@@ -97,17 +101,6 @@ const LiveContent = ({ module, settings }) => {
     const leftVideo = leftVideoRef.current;
     const leftCanvas = leftCanvasRef.current;
     const rightCanvas = rightCanvasRef.current;
-    // const { videoWidth, videoHeight } = leftVideo;
-
-    // // Configura el canvas con las dimensiones del video original (mitad del ancho total)
-    // leftCanvas.width = videoWidth / 2;
-    // leftCanvas.height = videoHeight;
-    // rightCanvas.width = videoWidth / 2;
-    // rightCanvas.height = videoHeight;
-
-    // // Dibuja las partes izquierda y derecha del video en los respectivos canvas
-    // leftCanvas.getContext('2d').drawImage(leftVideo, 0, 0, leftCanvas.width, leftCanvas.height, 0, 0, leftCanvas.width, leftCanvas.height);
-    // rightCanvas.getContext('2d').drawImage(leftVideo, leftCanvas.width, 0, rightCanvas.width, rightCanvas.height, 0, 0, rightCanvas.width, rightCanvas.height);
 
     // Convierte el canvas a una imagen en base64
     const leftImage = leftCanvas.toDataURL('image/png');
@@ -124,13 +117,10 @@ const LiveContent = ({ module, settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-    // Almacena las imágenes capturadas en el estado
-    // setCapturedImages({
-    //   left: leftImage,
-    //   right: rightImage,
-    // });
-    const { profile } = settings;
 
+    const { profile } = settings;
+    
+    loadingStore.set(true)
     showVisualStore.set(true)
     
     // Crear FormData y añadir los archivos
@@ -169,7 +159,7 @@ const LiveContent = ({ module, settings }) => {
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
-          <video ref={leftVideoRef} autoPlay className='h-full w-full'></video>
+          <video ref={leftVideoRef} autoPlay className='h-full w-full' width={width} height={height}></video>
           <canvas ref={leftCanvasRef} className="hidden"></canvas>
         </div>
         <div className="w-1/2 text-center ml-4">
