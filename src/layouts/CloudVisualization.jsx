@@ -1,29 +1,33 @@
-import { responseStore } from "../shared/response";
+import { useEffect, useRef } from "react";
+
 import { useStore } from "@nanostores/react";
+import { responseStore } from "../shared/response";
+import { loadingStore, showVisualStore } from "../shared/apiService";
+import { activeTabStore, scrollToSection } from "../shared/tabStore";
+import { leftImgPreview, rightImgPreview } from "../shared/imagesStore";
+
 import  Button  from "../components/utils/Button";
-import { showVisualStore } from "../shared/apiService";
 import LoadingSpinner from "../components/utils/Loading";
 import PointCloudViewer from "../components/PointCloudViewer";
-import { activeTabStore } from "../shared/tabStore";
-import { useEffect, useState } from "react";
-import { leftImgPreview, rightImgPreview } from "../shared/imagesStore";
 
 const CloudVisualization = ({ title }) => {
     const response = useStore(responseStore)
     const showVisualization =useStore(showVisualStore)
     const tab = useStore(activeTabStore)
-    // const [leftImage, setLeftImage] = useState('');
-    // const [rightImage, setRightImage] = useState('');
+    const loading = useStore(loadingStore)
     const leftImage = useStore(leftImgPreview)
     const rightImage = useStore(rightImgPreview)
+    const sectionRef = useRef(null);
+    const target = useStore(scrollToSection);
+
     
-    // useEffect(() => {
-    //     // if (typeof window !== 'undefined') {
-    //     //     setLeftImage(localStorage.getItem('leftImage'));
-    //     //     setRightImage(localStorage.getItem('rightImage'));
-    //     // }
-        
-    // }, []);
+    useEffect(() => {
+        if (target === 'visualization' && sectionRef.current) {
+          sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+          scrollToSection.set(null); // Resetea el store después de hacer el scroll
+        }
+      }, [target]);
+
 
     const handleRestart = () => {
         localStorage.removeItem('leftImage');
@@ -60,13 +64,13 @@ const CloudVisualization = ({ title }) => {
             </div>
             <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold my-10">{title}</h2>
-                <div className="bg-gray-100 border border-gray-400 rounded-md mx-52">
-                    {response ? (
+                <div ref={sectionRef} id="visualization" className="bg-gray-100 border border-gray-400 rounded-md mx-52">
+                    {!response || loading ? (
+                        <LoadingSpinner/>
+                    ) : (
                         //TODO: Manejo de arrays vacios en el response
                         //TODO: Manejo de envio de varias nubes de punto y cambio de tamaño entre densa y no densa
                         <PointCloudViewer pointCloud={response.point_cloud} colors={response.colors}/>
-                    ) : (
-                        <LoadingSpinner/>
                     )}  
                 </div>
             </div>

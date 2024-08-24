@@ -25,9 +25,9 @@ const LiveSettings = ({ onContinue }) => {
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <h2 className="text-center text-2xl font-semibold mb-6">Settings</h2>
       <div className="flex flex-col items-center">
-        <Robots onRobotSelect={setProfile}/>
-        <Dropdown label="FPS" options={["30", "20", "15", "10", "5"]} value={fps} onChange={e => setFps(e.target.value)} />
-        <Dropdown label="Resolution" options={["1920x1080", "1280x720", "800x600", "640x480", "320x240"]} value={resolution} onChange={e => setResolution(e.target.value)} />
+        <Robots onRobotSelect={setProfile} className={'mb-4'}/>
+        <Dropdown label="FPS" options={["30", "20", "15", "10", "5"]} value={fps} onChange={e => setFps(e.target.value)} className={'mb-4'}/>
+        <Dropdown label="Resolution" options={["1920x1080", "1280x720", "800x600", "640x480", "320x240"]} value={resolution} onChange={e => setResolution(e.target.value)} className={'mb-4'}/>
         <Button label={'Continue'} onClick={handleContinue}/>
       </div>
     </div>

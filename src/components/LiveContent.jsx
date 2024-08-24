@@ -2,6 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
+import Dropdown from './utils/Dropdown';
+import Checkbox from './utils/Checkbox';
+import ToggleButton from './utils/ToggleButton';
+import { useStore } from '@nanostores/react';
+import { scrollToSection } from '../shared/tabStore';
+
 
 const LiveContent = ({ module, settings }) => {
   const videoRef = useRef(null);
@@ -9,8 +15,18 @@ const LiveContent = ({ module, settings }) => {
   const rightVideoRef = useRef(null);
   const leftCanvasRef = useRef(null);
   const rightCanvasRef = useRef(null);
+
   const [width, setWidth] = useState(null)
   const [height, setHeight] = useState(null)
+
+  const [method, setMethod] = useState(null)
+  const [parameters, setParameters] = useState({
+    useRoi: true,
+    useMaxDisp: true,
+    normalize: true,
+  });
+
+  const loading = useStore(loadingStore)
 
   const initializeStream = (videoElement, canvas, outputVideo, isLeft) => {
     if (!canvas || !outputVideo) return;
@@ -71,8 +87,6 @@ const LiveContent = ({ module, settings }) => {
     
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
-        // leftVideoRef.current.srcObject = stream;
-        // rightVideoRef.current.srcObject = stream;
         videoRef.current.srcObject = stream;
         if (leftCanvasRef.current && rightCanvasRef.current && videoRef.current) {
           initializeStream(videoRef.current, leftCanvasRef.current, leftVideoRef.current, true);
@@ -98,7 +112,6 @@ const LiveContent = ({ module, settings }) => {
   }, [settings]);
 
   const captureImage = () => {
-    const leftVideo = leftVideoRef.current;
     const leftCanvas = leftCanvasRef.current;
     const rightCanvas = rightCanvasRef.current;
 
@@ -117,28 +130,28 @@ const LiveContent = ({ module, settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-
     const { profile } = settings;
+
+    if (!method) {
+      alert('Please select a generation method.');
+      return;
+    }
     
     loadingStore.set(true)
     showVisualStore.set(true)
-    
     // Crear FormData y añadir los archivos
     let formData = new FormData();
     formData.append('img_left', leftFile);
     formData.append('img_right', rightFile);
     formData.append('profile_name', profile);
-    formData.append('method', 'SELECTIVE');
+    formData.append('method', method);
 
     console.log('Sending request data:', Object.fromEntries(formData));
     
-    let parameters = {
-      useRoi: false,
-      useMaxDisp: true,
-      normalize: true,
-    };
-
     sendPostRequest(formData, module, parameters);
+    setTimeout(() => {
+      scrollToSection.set('visualization')
+    }, 100);
   };
 
   const dataURLToBlob = (dataURL) => {
@@ -152,9 +165,22 @@ const LiveContent = ({ module, settings }) => {
     return new Blob([ab], { type: mimeString });
   };
 
+  const handleCheckboxChange = (name, isChecked) => {
+    setParameters(prevState => ({
+      ...prevState,
+      [name]: isChecked,
+    }));
+  };
+
   return (
     <div className={"p-8 "}>
       <video ref={videoRef} autoPlay style={{display:'none'}}></video>
+      <div className={`flex justify-between content-center mb-8 `}>
+        <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
+        <Checkbox label="Use max disparity" checked={parameters.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
+        <Checkbox label="Normalize" checked={parameters.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
+        <ToggleButton leftLabel={'Keypoints'} rightLabel={'ROI'} checked={parameters.useRoi} onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
+      </div>
 
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
@@ -164,12 +190,12 @@ const LiveContent = ({ module, settings }) => {
         </div>
         <div className="w-1/2 text-center ml-4">
           <p className="mb-2 font-bold">RIGHT</p>
-          <video ref={rightVideoRef} autoPlay className='h-full w-full'></video>
+          <video ref={rightVideoRef} autoPlay className='h-full w-full' width={width} height={height}></video>
           <canvas ref={rightCanvasRef} className="hidden"></canvas>
         </div>
       </div>
       <div className="flex justify-center mb-6">
-        <Button label={'Capture'} onClick={captureImage}/>
+        <Button label={'Capture'} onClick={captureImage} disabled={loading}/>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
 
-const Robots = ({ onRobotSelect }) => {
+const Robots = ({ onRobotSelect, className }) => {
   const [robots, setRobots] = useState([]);
   const apiKey = import.meta.env.API_KEY;
 
@@ -25,7 +25,7 @@ const Robots = ({ onRobotSelect }) => {
   };
 
   return (
-    <Dropdown label='Robot' options={robots} onChange={handleDropdownChange} />
+    <Dropdown label='Robot' options={robots} onChange={handleDropdownChange} className={`${className}`}/>
   );
 };
 

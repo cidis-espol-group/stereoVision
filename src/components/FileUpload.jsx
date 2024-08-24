@@ -6,6 +6,8 @@ import Button from './utils/Button.jsx';
 import { sendPostRequest, loadingStore, showVisualStore } from "../shared/apiService.js";
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore.js';
 import { useStore } from '@nanostores/react';
+import ToggleButton from './utils/ToggleButton.jsx';
+import { scrollToSection } from '../shared/tabStore.js';
 
 const FileUpload = ({module }) => {
 
@@ -32,16 +34,12 @@ const FileUpload = ({module }) => {
       reader.onload = () => {
         const base64String = reader.result;
         store.set(base64String)
-        // if (typeof window !== 'undefined') {
-        //   localStorage.setItem(storageKey, base64String);
-        //   localStorage.setItem('updated from', 'fileUpload')
-        // }
       };
       reader.readAsDataURL(file_changed);
     }
   };
 
-  //TODO: arreglar el handle drop, no se actualiza nada cuando se arrastra la imagen
+  /////TODO: arreglar el handle drop, no se actualiza nada cuando se arrastra la imagen
   const handleDrop = (event, setImage, store) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
@@ -87,25 +85,28 @@ const FileUpload = ({module }) => {
     console.log('Sending request data:', Object.fromEntries(formData))
 
     sendPostRequest(formData, module, checkboxes)
+    setTimeout(() => {
+      scrollToSection.set('visualization')
+    }, 100);
   };
 
   
 
   return (
     <div className={`p-8`}>
-      <div className={`flex justify-between content-center mb-4`}>
+      <div className={`flex justify-between content-center mb-8 `}>
         <Robots onRobotSelect={handleDropdownChange}/>
-        <Dropdown label="Method" options={['SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
+        <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
         <Checkbox label="Use max disparity" checked={checkboxes.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
         <Checkbox label="Normalize" checked={checkboxes.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
-        <Checkbox label="Use ROI"checked={checkboxes.useRoi}onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
+        <ToggleButton leftLabel={'Keypoints'} rightLabel={'ROI'} checked={checkboxes.useRoi} onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
       </div>
       <div className={`flex justify-center mb-6`}>
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
           <div
             className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
-            onDrop={(e) => handleDrop(e, setImgLeft, leftPreview, 'leftImage')}
+            onDrop={(e) => handleDrop(e, setImgLeft, leftImgPreview)}
             onDragOver={handleDragOver}
           >
             <input
@@ -138,7 +139,7 @@ const FileUpload = ({module }) => {
           <p className="mb-2 font-bold">RIGHT</p>
           <div
             className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
-            onDrop={(e) => handleDrop(e, setImgRightPreview, setImgRight, rightPreview, 'rightImage')}
+            onDrop={(e) => handleDrop(e, setImgRight, rightImgPreview)}
             onDragOver={handleDragOver}
           >
             <input

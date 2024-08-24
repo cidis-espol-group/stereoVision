@@ -4,6 +4,8 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import React, { useState, useEffect } from 'react';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
+import { loadingStore, showVisualStore } from '../shared/apiService';
+import { responseStore } from '../shared/response';
 
 const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size }) => {
   let geometry = null;
@@ -45,7 +47,17 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size }) =>
   );
 };
 
-function PointCloudViewer({ pointCloud = [], colors = [], size = 0.001, filePath = '' }) {
+function PointCloudViewer({ pointCloud, colors, size = 0.001, filePath }) {
+  useEffect(()=>{
+    if (!pointCloud || pointCloud.length == 0) {
+      alert('There are no points to show.');
+      showVisualStore.set(false)
+      loadingStore.set(false)
+      // responseStore.set(null)
+      return;
+    }
+  })
+
   return (
     <Canvas
       camera={{ position: [0, 0, -2500], near: 0.1, far: 100000 }} 
