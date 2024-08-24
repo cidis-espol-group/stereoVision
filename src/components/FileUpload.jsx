@@ -95,7 +95,7 @@ const FileUpload = ({module }) => {
     <div className={`p-8`}>
       <div className={`flex justify-between content-center mb-4`}>
         <Robots onRobotSelect={handleDropdownChange}/>
-        <Dropdown label="Method" options={['SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
+        <Dropdown label="Method" options={['SGBM', 'WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
         <Checkbox label="Use max disparity" checked={checkboxes.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
         <Checkbox label="Normalize" checked={checkboxes.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
         <Checkbox label="Use ROI"checked={checkboxes.useRoi}onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
