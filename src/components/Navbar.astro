@@ -1,5 +1,14 @@
+---
+import { showVisualStore } from "../shared/apiService";
+import { showContentStore } from "../shared/tabStore";
+
+function resetStores() {
+  showContentStore.set(true);
+  showVisualStore.set(false)
+}
+---
 <nav class="bg-[#14788E] p-2 flex justify-between items-center">
-  <a href="/" class="text-white text-2xl tracking-wide font-bold">COMPUTER VISION</a>
+  <a href="/" class="text-white text-2xl tracking-wide font-bold" onclick=resetStores>COMPUTER VISION</a>
   <img src="/assets/CiDISLogo.png" alt="Centro de I + D + i de Sistemas Computacionales" class="hidden-sm" />
 </nav>
 
