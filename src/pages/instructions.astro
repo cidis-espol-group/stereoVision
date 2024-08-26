@@ -1,0 +1,470 @@
+---
+import { Code } from 'astro:components';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Instructivo de Uso">
+  
+    <main class="flex flex-row min-h-[75vh] ">
+        <!-- Menú lateral -->
+        <div class="hidden lg:block z-20 left-0 w-[25rem] pt-10 pb-10 pl-8 pr-6 border">
+          <nav id="nav" class="lg:text-sm lg:leading-6 sticky top-10">
+              <ul class="space-y-6">
+                  <li>
+                      <a id="link-configuraciones-perfiles" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-perfiles">
+                          Configuraciones y Perfiles
+                      </a>
+                      
+                      <ul class="pl-4 space-y-2">
+                          <li>
+                              <a id="link-configuraciones-comunes" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-comunes">
+                                  Configuraciones Comunes
+                              </a>
+                          </li>
+                          <li>
+                              <a id="link-profiles" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#profiles">
+                                  Perfiles
+                              </a>
+                          </li>
+                      </ul>
+                  </li>
+                  <li>
+                      <a id="link-height-estimation" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#height-estimation">
+                          Estimación de Altura
+                      </a>
+                  </li>
+                  <li>
+                      <a id="link-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#dense-point-cloud">
+                          Nube de Puntos Densa
+                      </a>
+                  </li>
+                  <li>
+                      <a id="link-no-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#no-dense-point-cloud">
+                          Nube de Puntos No Densa
+                      </a>
+                  </li>
+                  <li>
+                      <a id="link-feature-extraction" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#feature-extraction">
+                          Extracción de Características
+                      </a>
+                  </li>
+              </ul>
+          </nav>
+      </div>
+
+        <div class="flex-grow p-8">
+            <h1 class="text-3xl font-bold mb-4">Instructivo de Uso</h1>
+            <p class="mb-4">
+                Esta página está diseñada para ayudar a los usuarios a entender y utilizar las diferentes funcionalidades disponibles. A través de los módulos disponibles en la <a href="/" class="text-blue-500 underline">página principal</a>, puedes acceder a herramientas como la estimación de altura, la generación de nubes de puntos densas, entre otros.
+            </p>
+
+            <!-- Sección: Configuraciones y Perfiles -->
+            <section id="configuraciones-perfiles" class="mb-8">
+                <h2 class="text-2xl font-bold my-2">Configuraciones y Perfiles</h2>
+                <p class="mb-4">
+                  En esta sección, se detalalra a como gestionar y configurar los distintos aspectos de la plataforma, incluyendo la creación y uso de perfiles de calibración. Los perfiles te permiten guardar y reutilizar configuraciones específicas para diferentes cámaras o situaciones, facilitando un flujo de trabajo más eficiente. Además, explorarás las opciones comunes de configuración disponibles, que te ayudarán a ajustar el sistema para capturar y procesar imágenes tanto en tiempo real como desde archivos previamente guardados.
+              </p>
+              
+                <section id="configuraciones-comunes" class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-2">Configuraciones Comunes</h2>
+                    <p class="mb-4">
+                        En esta sección se describe cómo configurar la página para el uso en dos modos distintos: <strong>LIVE</strong> y <strong>FILE</strong>. Dependiendo del modo seleccionado, las opciones disponibles cambiarán para adaptarse al tipo de procesamiento que se realizará.
+                    </p>
+                    <img src="/assets/Commons.png" alt="Image_capure_modes" class="mb-4 mx-auto" />
+                  
+                    <h3 class="text-xl font-semibold mb-2">Modo LIVE</h3>
+                    <p class="mb-4">
+                        En el modo <strong>LIVE</strong>, el usuario puede seleccionar entre varias opciones para configurar la captura en tiempo real:
+                    </p>
+                    <img src="/assets/LIVE.png" alt="Image_capure_modes" class="mb-4 mx-auto" />
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>Robot:</strong> Permite seleccionar el <a href="#profiles" class="text-blue-500 underline">perfil</a> de robot a utilizar. Este perfil contiene las configuraciones específicas del robot.</li>
+                        <li><strong>FPS:</strong> Frames per second (FPS) selecciona la velocidad de captura de la cámara.</li>
+                        <li><strong>Resolution:</strong> La resolución en la que la cámara capturará la imagen en vivo.</li>
+                    </ul>
+                    <p class="mb-4">
+                        Después de configurar estas opciones, el usuario puede hacer clic en <strong>Continue</strong> para activar la cámara y comenzar la captura en vivo. Dependiendo del módulo seleccionado, se presentarán diferentes opciones de configuración para el procesamiento de la imagen capturada. Además, habrá un botón <strong>Capture</strong> para tomar la fotografía.
+                    </p>
+                  
+                    <h3 class="text-xl font-semibold mb-2">Modo FILE</h3>
+                    <p class="mb-4">
+                        En el modo <strong>FILE</strong>, el usuario puede cargar un archivo de imagen desde su dispositivo en lugar de utilizar la cámara en vivo. Este modo es útil para procesar imágenes preexistentes y analizar sus características utilizando las herramientas disponibles en la página.
+                    </p>
+                    <img src="/assets/FILE.png" alt="Image_capure_modes" class="mb-4 mx-auto" />
+  
+                    <h4 class="text-lg font-semibold mb-2">Subida de Imágenes</h4>
+                    <p class="mb-4">
+                        Para comenzar, se presentan dos contenedores donde se pueden subir las imágenes correspondientes a la <strong>izquierda</strong> y <strong>derecha</strong>. El usuario tiene dos opciones:
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>Arrastrar y soltar:</strong> Puede arrastrar las imágenes directamente sobre el contenedor correspondiente.</li>
+                        <li><strong>Seleccionar desde el dispositivo:</strong> Puede hacer clic en el contenedor, lo que abrirá un cuadro de diálogo para seleccionar una imagen desde el dispositivo.</li>
+                    </ul>
+                  
+                    <h4 class="text-lg font-semibold mb-4">Opciones de Configuración</h4>
+                    <p class="mb-6">
+                        Después de cargar las imágenes, se mostrarán opciones de configuración adicionales, que son estándar para la mayoría de los módulos en la plataforma. Estas opciones permiten ajustar cómo se procesarán las imágenes según el método seleccionado:
+                    </p>
+  
+                    <ul class="list-disc list-inside space-y-4 mb-6">
+                        <li>
+                            <strong>Robot:</strong> Selecciona el <a href="#profiles" class="text-blue-500 underline">perfil</a> de robot a utilizar, el cual define las configuraciones específicas para el robot en uso.
+                        </li>
+                        
+                        <li>
+                            <strong>Method:</strong> Elige el método de procesamiento para las imágenes. Los métodos disponibles son:
+                            <div class="mt-2 space-y-2 ml-4">
+                                <div class="italic"><strong>SGBM:</strong> (Semi-Global Block Matching) Método de correspondencia de bloques semi-global que optimiza la precisión en la estimación de la disparidad, adecuado para escenarios donde se requiere un balance entre velocidad y precisión.</div>
+                                <div class="italic"><strong>WLS-SGBM:</strong> Una versión mejorada del SGBM que aplica un filtro de mínima cuadrática ponderada (WLS) para suavizar la disparidad, reduciendo el ruido mientras se preservan los bordes importantes.</div>
+                                <div class="italic"><strong>RAFT:</strong> Método basado en aprendizaje profundo que utiliza un modelo de flujo de estimación recurrente para calcular la disparidad con gran precisión, especialmente en escenas complejas.</div>
+                                <div class="italic"><strong>SELECTIVE:</strong> Método que emplea técnicas de machine learning para seleccionar y procesar las mejores correspondencias de puntos, optimizando la precisión en la generación de la nube de puntos.</div>
+                            </div>
+                        </li>
+                        
+                        <li>
+                            <strong>Use max disparity:</strong> Activa o desactiva la opción de maximizar la disparidad durante el procesamiento. Desactivar esta opción funciona como un filtro para eliminar ruido de puntos flotantes, mientras que mantenerla activada permite el cálculo completo de la disparidad, incluyendo el ruido.
+                        </li>
+                        
+                        <li>
+                            <strong>Normalize:</strong> Opción para normalizar las imágenes durante el procesamiento. Si está activada <strong>(RECOMENDADO)</strong>, la nube generada se ajustará a un tamaño estándar y se corregirán posibles errores en la profundidad calculada. Si está desactivada, la nube de puntos se mostrará tal como fue calculada por los métodos de generación utilizados.
+                        </li>
+                    </ul>
+
+                    <h4 class="text-lg font-semibold mb-2">Iniciar el Procesamiento</h4>
+                    <p class="mb-4">
+                        Una vez configuradas todas las opciones, haz clic en el botón <strong>Continue</strong> para iniciar el procesamiento de las
+                        imágenes. El sistema aplicará las configuraciones seleccionadas y comenzará a analizar las imágenes cargadas.
+                    </p>
+                </section>
+
+                <section id="profiles" class="mb-8">
+                  <h2 class="text-2xl font-semibold mb-2">Perfiles</h2>
+                  <p class="mb-4">
+                      Los perfiles permiten almacenar y gestionar diferentes calibraciones de cámaras de manera ordenada y accesible. Esta funcionalidad es especialmente útil cuando se trabaja con múltiples cámaras o configuraciones de calibración diferentes. Cada perfil representa un conjunto específico de parámetros de calibración que pueden ser aplicados según sea necesario, lo que facilita la reutilización y el manejo de configuraciones complejas.
+                  </p>
+                  <img src="/assets/Config.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+                  <h3 class="text-xl font-semibold mb-2">Creación de Nuevos Perfiles</h3>
+                  <p class="mb-4">
+                      Para crear un nuevo perfil, es importante seguir una estructura específica en el archivo JSON que se subirá a la plataforma. La calibración puede ser realizada en cualquier herramienta externa, pero debe ser entregada en el siguiente formato para que sea aceptada y correctamente interpretada por el sistema.
+                  </p>
+              
+                  <h4 class="text-lg font-semibold mb-2">Formato JSON de ejemplo:</h4>
+                  <Code class="rounded-2xl p-5" code={`{
+    "example": {
+        "cameraMatrix1": [
+            [1031.1507131471858, 0, 0],
+            [0, 1032.117568616037, 0],
+            [934.1223953047944, 534.1022934087931, 1]
+        ],
+        "distCoeffs1": [-0.016201627022114046, -0.010799821417060772, 0, 0],
+        "cameraMatrix2": [
+            [1036.538061496097, 0, 0],
+            [0, 1037.8570658155766, 0],
+            [942.4783723248192, 552.5119162086186, 1]
+        ],
+        "distCoeffs2": [-0.007828421163718173, -0.03970152227984051, 0, 0],
+        "imageSize": [1080, 1920],
+        "stereoR": [
+            [0.9999942687219076, -0.00008124413025362022, 0.003384659913294103],
+            [0.00009674211738303457, 0.999989511743685, -0.004578978443842968],
+            [-0.0033842523989922736, 0.00457927963961076, 0.9999837883854329]
+        ],
+        "stereoT": [-60.0630049839543, -0.24820751825046766, 1.0670042205575287],
+        "flCamera1": [1031.1507131471858, 1032.117568616037],
+        "flCamera2": [1036.538061496097, 1037.8570658155766]
+    }
+}`} lang="js" theme="synthwave-84" />
+                      
+              
+                  <h3 class="text-xl font-semibold my-2">Explicación del Formato JSON</h3>
+                  <ul class="list-disc list-inside mb-4">
+                      <li><strong>cameraMatrix1:</strong> Matriz de calibración de la primera cámara.</li>
+                      <li><strong>distCoeffs1:</strong> Coeficientes de distorsión de la primera cámara.</li>
+                      <li><strong>cameraMatrix2:</strong> Matriz de calibración de la segunda cámara.</li>
+                      <li><strong>distCoeffs2:</strong> Coeficientes de distorsión de la segunda cámara.</li>
+                      <li><strong>imageSize:</strong> Tamaño de la imagen utilizada en la calibración (ancho x alto).</li>
+                      <li><strong>stereoR:</strong> Matriz de rotación que alinea la primera cámara con respecto a la segunda.</li>
+                      <li><strong>stereoT:</strong> Vector de traslación que representa la distancia y dirección entre las dos cámaras.</li>
+                      <li><strong>flCamera1:</strong> Distancia focal de la primera cámara.</li>
+                      <li><strong>flCamera2:</strong> Distancia focal de la segunda cámara.</li>
+                  </ul>
+              
+                  <h3 class="text-xl font-semibold mb-2">Subida de Perfiles</h3>
+                  <img src="/assets/CalibrationSettings.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+                  <img src="/assets/deleteCalibration.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+                  <p class="mb-4">
+                      Para subir un nuevo perfil, sigue estos pasos:
+                  </p>
+                  <ol class="list-decimal list-inside mb-4">
+                      <li>Asegúrate de que el archivo JSON sigue la estructura especificada.</li>
+                      <li>Dirígete a la sección de <span class="inline-flex items-center">Configuraciones y Perfiles 
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-settings ml-2"
+                          >
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                              <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                              <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                          </svg>
+                      </span>.
+                      </li>
+                      <li>Haz clic en el botón representado con el siguiente ícono 
+                          <span class="inline-flex items-center">
+                              <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="icon icon-tabler icons-tabler-outline icon-tabler-plus ml-2"
+                              >
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                  <path d="M12 5v14M5 12h14" />
+                              </svg>
+                          </span>.
+                      </li>
+                      
+                      <li>Rellena el formulario que aparecerá, proporcionando un nombre para el perfil y seleccionando el archivo JSON desde tu dispositivo.</li>
+                      <li>Haz clic en el botón <strong>Add Profile</strong> para completar el proceso. El sistema verificará la estructura del archivo y, si es válida, almacenará el perfil para su uso futuro.</li>
+                  </ol>
+
+                
+              
+                  <h3 class="text-xl font-semibold mb-2">Uso de Perfiles</h3>
+                  <img src="/assets/robot.png" alt="Image_capure_modes" class="mb-4 mx-auto border  rounded-xl" />
+
+                  <p class="mb-4">
+                      Una vez subido, el perfil estará disponible para su selección en cualquier configuración que requiera la calibración de la cámara. Esto permite cambiar rápidamente entre diferentes configuraciones según las necesidades del proyecto.
+                  </p>
+
+                  <h3 class="text-xl font-semibold mb-2">Eliminación de Perfiles</h3>
+                  <p class="mb-4">
+                      Para eliminar un perfil existente, sigue estos pasos:
+                  </p>
+                  <img src="/assets/deleteCalibration.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+                  <ol class="list-decimal list-inside mb-4">
+                      <li>Dirígete a la sección de <span class="inline-flex items-center">Configuraciones y Perfiles 
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-settings ml-2"
+                          >
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                              <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                              <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                          </svg>
+                      </span>.
+                      </li>
+                      <li>Haz clic en el botón representado con el siguiente ícono 
+                          <span class="inline-flex items-center">
+                              <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="icon icon-tabler icons-tabler-outline icon-tabler-plus ml-2"
+                              >
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                  <path d="M12 5v14M5 12h14" />
+                              </svg>
+                          </span>.
+                      </li>
+                      <li>En lugar de rellenar el formulario para subir un nuevo perfil, selecciona el perfil que deseas eliminar.</li>
+                      <li>Haz clic en el ícono de eliminar representado por el siguiente ícono 
+                          <span class="inline-flex items-center">
+                              <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="icon icon-tabler icons-tabler-outline icon-tabler-trash ml-2"
+                              >
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                  <path d="M4 7l16 0" />
+                                  <path d="M10 11l0 6" />
+                                  <path d="M14 11l0 6" />
+                                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                              </svg>
+                          </span>.
+                      </li>
+                      <li>El perfil se eliminará del sistema y ya no estará disponible para su selección.</li>
+                  </ol>
+
+              </section>
+              
+              
+            </section>
+
+            <!-- Sección: Estimación de Altura -->
+            <section id="height-estimation" class="mb-8">
+                <h2 class="text-2xl font-bold my-2">Estimación de Altura</h2>
+                <p class="mb-4">Descripción detallada de la funcionalidad de estimación de altura...</p>
+            </section>
+        
+            <!-- Sección: Nube de Puntos Densa -->
+            <section id="dense-point-cloud" class="mb-8">
+              <h2 class="text-2xl font-bold my-2">Nube de Puntos Densa</h2>
+              <p class="mb-4">
+                  Para generar una nube de puntos densa, sigue los pasos mencionados previamente en las secciones de 
+                  <a href="#configuraciones-perfiles" class="text-blue-500 underline">Configuraciones y Perfiles</a>. 
+                  Específicamente, asegúrate de que las imágenes se han subido correctamente y que las configuraciones deseadas han sido establecidas.
+              </p>
+              <img src="/assets/dense.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+              <p class="mb-4">
+                Una vez que hayas subido las imágenes y configurado los parámetros según tu perfil seleccionado, podrás proceder a la generación de la nube de puntos densa. Para ello, simplemente haz clic en el botón <strong>Continue</strong> disponible en la interfaz.
+            </p>
+            <p class="mb-4">
+                El sistema procesará las imágenes utilizando el método seleccionado y generará una nube de puntos densa. Dependiendo de la configuración y el método elegido, el tiempo de procesamiento puede variar.
+            </p>
+            <img src="/assets/dense2.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+            <p class="mb-4">
+                La nube de puntos densa generada se mostrará en la interfaz, permitiéndote analizar los datos tridimensionales obtenidos. Puedes interactuar con la nube de puntos para inspeccionar detalles específicos, cambiar la perspectiva o exportar los datos si es necesario.
+            </p>
+            <img src="/assets/download.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+            <p class="mb-4">
+              Además, tienes la opción de descargar la nube de puntos generada en diferentes formatos. Estos formatos incluyen:
+              <ul class="list-disc list-inside">
+                  <li><strong>.ply:</strong> Formato Polygon File Format, que puede almacenar no solo las coordenadas 3D de los puntos, sino también información de color (RGB) y otros atributos adicionales.</li>
+                  <li><strong>.xyz:</strong> Formato que contiene solo las coordenadas de los puntos en el espacio tridimensional.</li>
+                  <li><strong>.pcd:</strong> Formato Point Cloud Data, utilizado principalmente con la biblioteca PCL (Point Cloud Library), que también puede almacenar datos de color.</li>
+                  <li><strong>.pts:</strong> Formato que contiene una lista de puntos en un espacio 3D con sus coordenadas, pero generalmente sin información de color.</li>
+                  <li><strong>.xyzrgb:</strong> Similar al formato .xyz, pero con la adición de información de color RGB para cada punto.</li>
+              </ul>
+              Para descargar la nube de puntos en el formato deseado, selecciona el formato en el menú desplegable junto al botón <strong>Download</strong> y luego haz clic en el botón para iniciar la descarga.
+          </p>
+        </section>
+          
+        
+            <!-- Sección: Nube de Puntos No Densa -->
+            <section id="no-dense-point-cloud" class="mb-8">
+              <h2 class="text-2xl font-bold my-2">Nube de Puntos No Densa</h2>
+              <p class="mb-4">
+                  Al igual que en la sección de "Nube de Puntos Densa", deberás pasar por los pasos previos de 
+                  <a href="#configuraciones-perfiles" class="text-blue-500 underline">Configuraciones y Perfiles</a>. 
+                  Después de cargar las imágenes y establecer la configuración deseada, podrás proceder a la generación de la nube de puntos no densa.
+              </p>
+              <img src="/assets/nodense.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+              <p class="mb-4">
+                  Una característica única de esta sección es la opción de elegir entre dos modos distintos para la generación de la nube de puntos no densa: <strong>Keypoints</strong> y <strong>ROI</strong>. Estos modos pueden seleccionarse utilizando un <strong>toggle button</strong> disponible en la sección de configuración:
+              </p>
+              <div class="flex flex-wrap justify-center mb-4">
+                <div class="w-full md:w-1/2 p-2">
+                    <img src="/assets/nodense3.png" alt="Keypoints" class="rounded-xl shadow-md max-w-full h-auto" />
+                    <p class="text-center mt-2 italic">Modo Keypoints</p>
+                </div>
+                <div class="w-full md:w-1/2 p-2">
+                    <img src="/assets/nodense2.png" alt="ROI" class="rounded-xl shadow-md max-w-full h-auto" />
+                    <p class="text-center mt-2 italic">Modo ROI</p>
+                </div>
+            </div>
+            <p class="mb-4">
+              Una vez configurado el modo deseado, haz clic en el botón <strong>Continue</strong> para proceder con la generación de la nube de puntos no densa. El sistema procesará las imágenes y generará la nube de puntos correspondiente.
+          </p>
+              <ul class="list-disc list-inside mb-4">   
+                  <li>
+                      <strong>Keypoints:</strong> Este modo generará una nube de puntos no densa que solo contiene los keypoints de las personas identificadas en la escena. Los keypoints corresponden a partes específicas del cuerpo, tales como la nariz, ojos, hombros, codos, entre otros.
+                  </li>
+                  <li>
+                      <strong>ROI (Región de Interés):</strong> Este modo generará una nube de puntos no densa que incluye todos los puntos pertenecientes a la persona seleccionada en la escena, delimitados por su borde o contorno.
+                  </li>
+              </ul>
+              
+              <img src="/assets/download.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+              <p class="mb-4">
+                  Además, tienes la opción de descargar la nube de puntos generada en diferentes formatos. Al seleccionar el formato deseado y hacer clic en el botón <strong>Download</strong>, se descargará un archivo ZIP que contiene:
+              </p>
+              <ul class="list-disc list-inside mb-4">
+                  <li>El archivo de la nube de puntos en el formato seleccionado (.ply, .xyz, .pcd, .pts, .xyzrgb).</li>
+                  <li>
+                      Un archivo CSV que contiene los keypoints identificados de la persona en la escena, siguiendo la estructura de etiquetado de YOLOv8. Este archivo solo estará presente si se eligió el modo <strong>Keypoints</strong>. Si se eligió el modo <strong>ROI</strong>, el archivo CSV estará vacío.
+                  </li>
+              </ul>
+              <p class="mb-4">
+                  La estructura del archivo CSV para el modo <strong>Keypoints</strong> sigue el siguiente orden de etiquetas: 
+                  <Code class="rounded-2xl p-5 mb-5" code={`labels = [
+    "nose", "left_eye", "right_eye", "left_ear", "right_ear",
+    "left_shoulder", "right_shoulder", "left_elbow", "right_elbow",
+    "left_wrist", "right_wrist", "left_hip", "right_hip",
+    "left_knee", "right_knee", "left_ankle", "right_ankle"
+]`} 
+                  lang="js" theme="synthwave-84"/>
+                  Cada fila del archivo CSV corresponde a un keypoint identificado, con su respectiva coordenada en la nube de puntos.
+              </p>
+          </section>
+          
+        
+            <!-- Sección: Extracción de Características -->
+            <section id="feature-extraction" class="mb-8">
+                <h2 class="text-2xl font-bold my-2">Extracción de Características</h2>
+                <p class="mb-4">Descripción detallada de la extracción de características...</p>
+            </section>
+        </div>
+    </main>
+</Layout>
+
+<style>
+nav#nav a {
+    transition: color 0.2s ease-in-out;
+}
+
+nav#nav a:hover {
+    color: #ffffff; /* Color de hover */
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll('#nav a');
+    const sections = document.querySelectorAll('section');
+
+    function setActiveLink() {
+        let index = sections.length;
+
+        while(--index && window.scrollY + 50 < sections[index].offsetTop) {}
+        
+        links.forEach((link) => link.classList.remove('text-white', 'bg-[#4E99A8]', 'font-semibold'));
+        links[index].classList.add('text-white', 'bg-[#4E99A8]', 'font-semibold');
+    }
+
+    setActiveLink();
+    window.addEventListener('scroll', setActiveLink);
+});
+</script>
