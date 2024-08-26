@@ -1,4 +1,5 @@
 ---
+import ImageVisualization from '../components/ImageVisualization';
 import Tabs from '../components/Tabs';
 import CloudVisualization from '../layouts/CloudVisualization';
 import Layout from '../layouts/Layout.astro';
@@ -6,6 +7,8 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Dense Point Cloud">
   <Tabs module="dense-point-cloud" client:load />
+
+  <ImageVisualization client:load/>
 
   <CloudVisualization title={'DENSE POINT CLOUD'} module={"dense-point-cloud"} client:load/>
 

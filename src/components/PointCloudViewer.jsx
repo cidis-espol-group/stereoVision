@@ -15,7 +15,10 @@ const createCircularTexture = (color) => {
   // Dibuja un círculo azul
   context.beginPath();
   context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-  context.fillStyle = color;
+  context.fillStyle = `rgb(
+    ${Math.floor((Math.random() * 255)-85)},
+    ${Math.floor((Math.random() * 255)-200)},
+    ${Math.floor((Math.random() * 255)-50)})`;
   context.fill();
   return new THREE.CanvasTexture(canvas);
 };
@@ -79,7 +82,17 @@ function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color})
       className='h-full'
       style={{ height: '100vh'}}
     >
-      <PointCloud points={pointCloud} colors={colors} size={size} shape={shape} color={color}/>
+      {/* <PointCloud points={pointCloud} colors={colors} size={size} shape={shape} color={color}/> */}
+      {pointCloud.map((points, index) => (
+        <PointCloud 
+          key={index}
+          points={points} 
+          colors={colors[index]} 
+          size={size} 
+          shape={shape} 
+          color={color}
+        />
+      ))}
       <OrbitControls 
         enableDamping 
         dampingFactor={0.25} 

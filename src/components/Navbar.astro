@@ -1,10 +1,13 @@
-<nav class='bg-teal-700 p-2 flex justify-between items-center'>
-  <a href="/" class='text-white text-2xl tracking-wide font-bold'>COMPUTER VISION</a>
-  <img src="/assets/CiDISLogo.png" alt="Centro de I + D + i de Sistemas Computacionales"  />
+<nav class="bg-[#14788E] p-2 flex justify-between items-center">
+  <a href="/" class="text-white text-2xl tracking-wide font-bold">COMPUTER VISION</a>
+  <img src="/assets/CiDISLogo.png" alt="Centro de I + D + i de Sistemas Computacionales" class="hidden-sm" />
 </nav>
 
 <style>
-  .bg-teal-700{
-    background-color: #14788E;
+  /* Media query para pantallas menores a 400px */
+  @media (max-width: 400px) {
+    .hidden-sm {
+      display: none;
+    }
   }
 </style>

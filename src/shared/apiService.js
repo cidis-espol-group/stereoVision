@@ -18,10 +18,10 @@ const getURL = (module, parameters) => {
         generatedUrl = `${base}generate_point_cloud/dense/?use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
         break;
       case 'height-estimation':
-        generatedUrl = base;
+        generatedUrl =`${base}generate_point_cloud/nodense/height_estimation/?use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
         break;
       case 'no-dense-point-cloud':
-        generatedUrl = `${base}generate_point_cloud/nodense/complete/?use_roi=${parameters.useRoi}&use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
+        generatedUrl = `${base}generate_point_cloud/nodense/individual/?use_roi=${parameters.useRoi}&use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
         break;
       case 'feature-extraction':
         generatedUrl = base;
@@ -91,6 +91,8 @@ export const sendPostRequest = async (data, module, parameters) => {
     } 
 
     const jsonResponse = await response.json();
+    console.log(jsonResponse);
+    
     responseStore.set(jsonResponse);
     // showContentStore.set(true); 
     loadingStore.set(false)
