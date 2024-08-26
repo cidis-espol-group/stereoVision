@@ -6,6 +6,8 @@ import { showContentStore } from "./tabStore";
 const apiKey = import.meta.env.API_KEY;
 export const loadingStore = atom(false)
 export const showVisualStore = atom(false)
+export const isRoiStore = atom(true)
+
 const base = 'http://127.0.0.1:8000/';
 
 
@@ -31,14 +33,16 @@ const getURL = (module, parameters) => {
     return generatedUrl;
 };
 
-const getDownloadURL = (module) => {
-  let generatedUrl = '';
+const getDownloadURL = (module, format) => {
+  let generatedUrl = `${base}download_point_cloud/`;
+  console.log('dentro de switch',module);
+  
   switch (module) {
     case 'dense-point-cloud':
-      generatedUrl = `${base}generate_point_cloud/dense/`;
+      generatedUrl += `dense/?format=${format}`;
       break;
     case 'no-dense-point-cloud':
-      generatedUrl = `${base}generate_point_cloud/nodense/`;
+      generatedUrl += `nodense/?format=${format}`;
       break;
     default:
       generatedUrl = '';
@@ -47,23 +51,8 @@ const getDownloadURL = (module) => {
   return generatedUrl;
 };
 
-
-
-export const sendPostRequest = async (data, module, parameters) => {
-  const url = getURL(module, parameters);
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: data,
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'ngrok-skip-browser-warning': 'any'
-      },
-    });
-
-    if (!response.ok) {
-      let errorMessage;
+const throwError = (response) => {
+  let errorMessage;
         switch(response.status) {
           case 500:
             errorMessage = 'No se detectaron personas. Intente otra vez.';
@@ -82,26 +71,10 @@ export const sendPostRequest = async (data, module, parameters) => {
         }
       alert(errorMessage); // Muestra una alerta en pantalla
       throw new Error(errorMessage);
-    } 
+}
 
-    const jsonResponse = await response.json();
-    responseStore.set(jsonResponse);
-    // showContentStore.set(true); 
-    loadingStore.set(false)
-    
-  } catch (error) {
-    
-
-    console.error('Error in fetch:', error);
-
-    loadingStore.set(false);
-    showVisualStore.set(false)
-  }  
-};
-
-
-export const downloadPointcloud = async (data, module, parameters) => {
-  const url = getDownloadURL(module);
+export const sendPostRequest = async (data, module, parameters) => {
+  const url = getURL(module, parameters);
 
   try {
     const response = await fetch(url, {
@@ -110,18 +83,76 @@ export const downloadPointcloud = async (data, module, parameters) => {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'ngrok-skip-browser-warning': 'any'
-      }
+      },
     });
 
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      downloadResponseStore.set(jsonResponse);
-      // loadingStore.set(false)
-      
-    } else {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    responseStore.set(jsonResponse);
+    // showContentStore.set(true); 
+    loadingStore.set(false)
+    
   } catch (error) {
     console.error('Error in fetch:', error);
+    loadingStore.set(false);
+    showVisualStore.set(false)
   }  
+};
+
+
+export const downloadFile = async (module, extension) => {
+  const downloadURL = getDownloadURL(module, extension)
+  console.log('module',module);
+  console.log('extension',extension);
+  console.log('url',downloadURL);
+  
+  
+    fetch(downloadURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      
+      // Guarda el response en una variable para poder usarlo después
+      const contentDisposition = response.headers.get('Content-Disposition');
+  
+      return response.blob().then(blob => {
+        return { blob, contentDisposition }; // Retorna un objeto con el blob y el encabezado
+      });
+    })
+    .then(({ blob, contentDisposition }) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+  
+      // Nombre por defecto si no se proporciona en el encabezado
+      let filename = `pointCloud.${extension}`;
+
+      if (!isRoiStore.get()) {
+        filename = `pointCloud`;
+      }
+  
+      // Extraer el nombre del archivo del encabezado 'Content-Disposition' si está disponible
+      if (contentDisposition) {
+        const matches = /filename="(.+)"/.exec(contentDisposition);
+        if (matches != null && matches[1]) filename = matches[1];
+      }
+  
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+      console.error('There was an error downloading the file:', error);
+    });
 };

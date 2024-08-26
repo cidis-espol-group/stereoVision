@@ -3,7 +3,7 @@ import Dropdown from './utils/Dropdown.jsx';
 import Robots from './utils/Robots.jsx';
 import Checkbox from './utils/Checkbox.jsx';
 import Button from './utils/Button.jsx';
-import { sendPostRequest, loadingStore, showVisualStore } from "../shared/apiService.js";
+import { sendPostRequest, loadingStore, showVisualStore, isRoiStore } from "../shared/apiService.js";
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore.js';
 import { useStore } from '@nanostores/react';
 import ToggleButton from './utils/ToggleButton.jsx';
@@ -75,6 +75,7 @@ const FileUpload = ({module }) => {
     
     loadingStore.set(true)
     showVisualStore.set(true)
+    isRoiStore.set(checkboxes.useRoi)
     
     let formData = new FormData();
     formData.append('img_left', imgLeft); // leftImageFile es el archivo

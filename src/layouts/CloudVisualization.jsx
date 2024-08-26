@@ -2,15 +2,16 @@ import { useEffect, useRef } from "react";
 
 import { useStore } from "@nanostores/react";
 import { responseStore } from "../shared/response";
-import { loadingStore, showVisualStore } from "../shared/apiService";
 import { activeTabStore, scrollToSection } from "../shared/tabStore";
 import { leftImgPreview, rightImgPreview } from "../shared/imagesStore";
+import { loadingStore, showVisualStore, isRoiStore } from "../shared/apiService";
 
 import  Button  from "../components/utils/Button";
 import LoadingSpinner from "../components/utils/Loading";
 import PointCloudViewer from "../components/PointCloudViewer";
+import Download from "../components/utils/Download";
 
-const CloudVisualization = ({ title }) => {
+const CloudVisualization = ({ title, module }) => {
     const response = useStore(responseStore)
     const showVisualization =useStore(showVisualStore)
     const tab = useStore(activeTabStore)
@@ -19,6 +20,9 @@ const CloudVisualization = ({ title }) => {
     const rightImage = useStore(rightImgPreview)
     const sectionRef = useRef(null);
     const target = useStore(scrollToSection);
+    const isRoi = useStore(isRoiStore)
+
+    const pcColors = ['blue', 'red', 'green']
 
     
     useEffect(() => {
@@ -62,16 +66,24 @@ const CloudVisualization = ({ title }) => {
             <div className={`flex justify-center mb-6 ${tab === 'LIVE' ? 'hidden' : 'visible'}`}>
                 <Button label={'Restart'} onClick={handleRestart} />
             </div>
-            <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold my-10">{title}</h2>
-                <div ref={sectionRef} id="visualization" className="bg-gray-100 border border-gray-400 rounded-md mx-52">
-                    {!response || loading ? (
-                        <LoadingSpinner/>
-                    ) : (
-                        //TODO: Manejo de arrays vacios en el response
-                        //TODO: Manejo de envio de varias nubes de punto y cambio de tamaño entre densa y no densa
-                        <PointCloudViewer pointCloud={response.point_cloud} colors={response.colors}/>
-                    )}  
+            <div className="mx-24">
+                <div className="flex justify-between mb-6">
+                    <h2 className="text-2xl font-bold my-10">{title}</h2>
+                    <Download module={module} className={loading ? 'hidden': 'visible'}/>
+                </div>
+                <div className="text-center">
+                    <div ref={sectionRef} id="visualization" className="bg-gray-100 border border-gray-400 rounded-md ">
+                        {!response || loading ? (
+                            <LoadingSpinner/>
+                        ) : (
+                            <PointCloudViewer pointCloud={response.point_cloud} colors={response.colors} {...(!isRoi && { size: '4' })} {...(!isRoi && { shape: 'circle' })} {...(!isRoi && { color: 'blue' })}/>
+                            // <div>
+                            //     {response.point_clouds.map((index, point_cloud) => (
+                            //         <PointCloudViewer key={index} pointCloud={point_cloud} colors={response.colors[index]} {...(!isRoi && { size: '4' })} {...(!isRoi && { shape: 'circle' })} {...(!isRoi && { color: pcColors[index] })}/>
+                            //     ))}
+                            // </div>
+                        )}  
+                    </div>
                 </div>
             </div>
         </div>

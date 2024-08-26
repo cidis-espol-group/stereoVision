@@ -5,9 +5,22 @@ import { OrbitControls } from '@react-three/drei';
 import React, { useState, useEffect } from 'react';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
 import { loadingStore, showVisualStore } from '../shared/apiService';
-import { responseStore } from '../shared/response';
 
-const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size }) => {
+const createCircularTexture = (color) => {
+  const size = 256; // Tamaño de la textura
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext('2d');
+  // Dibuja un círculo azul
+  context.beginPath();
+  context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+  context.fillStyle = color;
+  context.fill();
+  return new THREE.CanvasTexture(canvas);
+};
+
+const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size= 0.001 , shape = 'default', color}) => {
   let geometry = null;
 
   if (filePath != '' && filePath) {
@@ -28,13 +41,15 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size }) =>
     }, [points, colors]);
   }
 
+  const circularTexture = useMemo(() => createCircularTexture(color), [color]);
   const material = useMemo(() => {
     return new THREE.PointsMaterial({
       size: size,
-      vertexColors: true, // Asegúrate de que vertexColors esté habilitado
-      // color: 'red', // Descomenta esto para probar con un color sólido
+      map: shape === 'circle' ? circularTexture : null,
+      alphaTest: shape === 'circle' ? 0.5 : 0,
+      vertexColors: shape === 'default' && !color? true : false,
     });
-  }, [size]);
+  }, [size, shape, color, circularTexture]);
 
   return (
     <points
@@ -47,7 +62,7 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size }) =>
   );
 };
 
-function PointCloudViewer({ pointCloud, colors, size = 0.001, filePath }) {
+function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color}) {
   useEffect(()=>{
     if (!pointCloud || pointCloud.length == 0) {
       alert('There are no points to show.');
@@ -64,7 +79,7 @@ function PointCloudViewer({ pointCloud, colors, size = 0.001, filePath }) {
       className='h-full'
       style={{ height: '100vh'}}
     >
-      <PointCloud points={pointCloud} colors={colors} size={size} />
+      <PointCloud points={pointCloud} colors={colors} size={size} shape={shape} color={color}/>
       <OrbitControls 
         enableDamping 
         dampingFactor={0.25} 

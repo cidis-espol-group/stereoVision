@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
+import { isRoiStore, loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 import Dropdown from './utils/Dropdown';
@@ -139,7 +139,8 @@ const LiveContent = ({ module, settings }) => {
     
     loadingStore.set(true)
     showVisualStore.set(true)
-    // Crear FormData y añadir los archivos
+    isRoiStore.set(parameters.useRoi)
+
     let formData = new FormData();
     formData.append('img_left', leftFile);
     formData.append('img_right', rightFile);
