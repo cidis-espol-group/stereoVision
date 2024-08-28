@@ -330,9 +330,27 @@ import Layout from '../layouts/Layout.astro';
 
             <!-- Sección: Estimación de Altura -->
             <section id="height-estimation" class="mb-8">
-                <h2 class="text-2xl font-bold my-2">Estimación de Altura</h2>
-                <p class="mb-4">Descripción detallada de la funcionalidad de estimación de altura...</p>
+                <h2 class="text-2xl font-semibold mb-2">Estimación de Altura</h2>
+                <p class="mb-4">
+                    El módulo de <strong>Estimación de Altura</strong> está diseñado para calcular la altura de las personas presentes en una escena, junto con la profundidad a la que se encuentran. Este proceso se realiza utilizando imágenes estéreo (izquierda y derecha), lo que permite una estimación precisa y tridimensional.
+                </p>
+                <p class="mb-4">
+                    Para comenzar, sigue los pasos previamente mencionados en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a>. Asegúrate de haber cargado correctamente las imágenes izquierda y derecha y haber configurado todos los parámetros según las necesidades de tu proyecto.
+                </p>
+                <img src="/assets/height1.png" alt="Estimación de Altura" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+                <p class="mb-4">
+                    Una vez que las imágenes estén listas y las configuraciones hayan sido ajustadas, podrás proceder con la estimación de altura. Haz clic en el botón <strong>Continue</strong> para iniciar el proceso. El sistema calculará automáticamente la altura de las personas en la escena, utilizando los algoritmos de disparidad y profundidad aplicados a las imágenes cargadas.
+                </p>
+                <img src="/assets/height2.png" alt="Resultados de Estimación de Altura" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+                <p class="mb-4">
+                    El resultado de la estimación incluirá la altura de cada persona identificada, así como la distancia a la que se encuentran desde el punto de vista de la cámara. Estos datos serán presentados en la interfaz en una tabla independiente para cada metrica.
+                </p>
+
+                
             </section>
+
         
             <!-- Sección: Nube de Puntos Densa -->
             <section id="dense-point-cloud" class="mb-8">
@@ -412,9 +430,9 @@ import Layout from '../layouts/Layout.astro';
                   Además, tienes la opción de descargar la nube de puntos generada en diferentes formatos. Al seleccionar el formato deseado y hacer clic en el botón <strong>Download</strong>, se descargará un archivo ZIP que contiene:
               </p>
               <ul class="list-disc list-inside mb-4">
-                  <li>El archivo de la nube de puntos en el formato seleccionado (.ply, .xyz, .pcd, .pts, .xyzrgb).</li>
+                  <li>Un archivo (Por persona) de la nube de puntos en el formato seleccionado (.ply, .xyz, .pcd, .pts, .xyzrgb).</li>
                   <li>
-                      Un archivo CSV que contiene los keypoints identificados de la persona en la escena, siguiendo la estructura de etiquetado de YOLOv8. Este archivo solo estará presente si se eligió el modo <strong>Keypoints</strong>. Si se eligió el modo <strong>ROI</strong>, el archivo CSV estará vacío.
+                      Un archivo CSV (Por persona) que contiene los Keypoints identificados de la persona en la escena, siguiendo la estructura de etiquetado de YOLOv8. Este archivo solo estará presente si se eligió el modo <strong>Keypoints</strong>. Si se eligió el modo <strong>ROI</strong>, el archivo CSV estará vacío.
                   </li>
               </ul>
               <p class="mb-4">
