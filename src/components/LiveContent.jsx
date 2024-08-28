@@ -73,7 +73,7 @@ const LiveContent = ({ module, settings }) => {
 
   useEffect(() => {
     const { fps, resolution } = settings;
-    const [width, height] = resolution.toString().split('×').map(Number);
+    const [width, height] = resolution.toString().split('x').map(Number);
     setWidth(width);
     setHeight(height)
     
@@ -84,10 +84,12 @@ const LiveContent = ({ module, settings }) => {
         frameRate: { ideal: Number(fps) },
       },
     };
-    
+    console.log(resolution);
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
         videoRef.current.srcObject = stream;
+        
+        
         if (leftCanvasRef.current && rightCanvasRef.current && videoRef.current) {
           initializeStream(videoRef.current, leftCanvasRef.current, leftVideoRef.current, true);
           initializeStream(videoRef.current, rightCanvasRef.current, rightVideoRef.current, false);
@@ -141,6 +143,8 @@ const LiveContent = ({ module, settings }) => {
     showVisualStore.set(true)
     isRoiStore.set(parameters.useRoi)
 
+    
+
     let formData = new FormData();
     formData.append('img_left', leftFile);
     formData.append('img_right', rightFile);
@@ -153,7 +157,23 @@ const LiveContent = ({ module, settings }) => {
     setTimeout(() => {
       scrollToSection.set('visualization')
     }, 100);
+
+    downloadImage(leftImage, 'leftImage')
+    downloadImage(rightImage, 'rightImage')
   };
+
+  const downloadImage = (url, filename) =>{
+    const currentDate = new Date();
+    const dateString = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+    const hourDtring = currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds()
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename + '' + dateString + '-' + hourDtring + '.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }
 
   const dataURLToBlob = (dataURL) => {
     const byteString = atob(dataURL.split(',')[1]);
