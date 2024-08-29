@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from './Dropdown';
+import { getProfiles } from '../../shared/apiService';
 
-const Robots = ({ onRobotSelect, className }) => {
+const Robots = ({ onRobotSelect, className, onChange}) => {
   const [robots, setRobots] = useState([]);
-  const apiKey = import.meta.env.API_KEY;
 
-  //TODO: Cambiar función de fetch a shared/api
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/get_profiles/',{
-      headers: {
-        'Authorization':`Bearer ${apiKey}`,
-        'ngrok-skip-browser-warning': 'any'
-      }
-    }
-    )
-      .then(response => response.json())
-      .then(data => setRobots(data.map(robot => robot.name))) // Extrae solo los nombres
-      .catch(error => console.error('Error fetching profiles:', error));
+    getProfiles().then(data => setRobots(data.map(robot => robot.name))) // Extrae solo los nombres
   }, []);
 
   const handleDropdownChange = (event) => {
     const selectedValue = event.target.value;
-    onRobotSelect(selectedValue); // Pasa el valor seleccionado al componente padre
+    onRobotSelect(selectedValue);
+    if (onChange) {
+      onChange(selectedValue)
+    }
   };
 
   return (
-    <Dropdown label='Robot' options={robots} onChange={handleDropdownChange} className={`${className}`}/>
+    <Dropdown label='Robot' options={robots} onChange={onChange} className={`${className}`}/>
   );
 };
 

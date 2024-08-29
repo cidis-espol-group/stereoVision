@@ -83,8 +83,6 @@ const FileUpload = ({module }) => {
     formData.append('profile_name', profile);
     formData.append('method', method);
     
-    console.log('Sending request data:', Object.fromEntries(formData))
-
     sendPostRequest(formData, module, checkboxes)
     setTimeout(() => {
       scrollToSection.set('visualization')
@@ -96,7 +94,7 @@ const FileUpload = ({module }) => {
   return (
     <div className={`p-8`}>
       <div className={`flex justify-between content-center mb-8 `}>
-        <Robots onRobotSelect={handleDropdownChange}/>
+        <Robots onChange={e => setProfile(e.target.value)}/>
         <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
         <Checkbox label="Use max disparity" checked={checkboxes.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
         <Checkbox label="Normalize" checked={checkboxes.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>

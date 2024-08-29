@@ -24,6 +24,7 @@ const LiveContent = ({ module, settings }) => {
     useRoi: true,
     useMaxDisp: true,
     normalize: true,
+    saveImgs: false
   });
 
   const loading = useStore(loadingStore)
@@ -84,7 +85,6 @@ const LiveContent = ({ module, settings }) => {
         frameRate: { ideal: Number(fps) },
       },
     };
-    console.log(resolution);
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
         videoRef.current.srcObject = stream;
@@ -150,25 +150,25 @@ const LiveContent = ({ module, settings }) => {
     formData.append('img_right', rightFile);
     formData.append('profile_name', profile);
     formData.append('method', method);
-
-    console.log('Sending request data:', Object.fromEntries(formData));
     
     sendPostRequest(formData, module, parameters);
     setTimeout(() => {
       scrollToSection.set('visualization')
     }, 100);
 
-    downloadImage(leftImage, 'leftImage')
-    downloadImage(rightImage, 'rightImage')
+    if (parameters.saveImgs) {
+      downloadImage(leftImage, 'LEFT', '.png')
+      downloadImage(rightImage, 'RIGHT', '.png') 
+    }
   };
 
-  const downloadImage = (url, filename) =>{
+  const downloadImage = (url, filename, extension) =>{
     const currentDate = new Date();
-    const dateString = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+    const dateString = currentDate.getDate() + "_" + (currentDate.getMonth() + 1) + "_" + currentDate.getFullYear();
     const hourDtring = currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds()
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename + '' + dateString + '-' + hourDtring + '.png';
+    a.download = dateString + '_' + hourDtring + '_' + filename + extension;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -194,12 +194,13 @@ const LiveContent = ({ module, settings }) => {
   };
 
   return (
-    <div className={"p-8 "}>
+    <div className={"pt-8 px-8"}>
       <video ref={videoRef} autoPlay style={{display:'none'}}></video>
       <div className={`flex justify-between content-center mb-8 `}>
         <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
         <Checkbox label="Use max disparity" checked={parameters.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
         <Checkbox label="Normalize" checked={parameters.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
+        <Checkbox label="Save Images" checked={parameters.saveImgs} onChange={(isChecked) => handleCheckboxChange('saveImgs', isChecked)}/>
         <ToggleButton leftLabel={'Keypoints'} rightLabel={'ROI'} checked={parameters.useRoi} onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
       </div>
 

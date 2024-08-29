@@ -35,7 +35,6 @@ const getURL = (module, parameters) => {
 
 const getDownloadURL = (module, format) => {
   let generatedUrl = `${base}download_point_cloud/`;
-  console.log('dentro de switch',module);
   
   switch (module) {
     case 'dense-point-cloud':
@@ -91,7 +90,6 @@ export const sendPostRequest = async (data, module, parameters) => {
     } 
 
     const jsonResponse = await response.json();
-    console.log(jsonResponse);
     
     responseStore.set(jsonResponse);
     // showContentStore.set(true); 
@@ -106,11 +104,7 @@ export const sendPostRequest = async (data, module, parameters) => {
 
 
 export const downloadFile = async (module, extension) => {
-  const downloadURL = getDownloadURL(module, extension)
-  console.log('module',module);
-  console.log('extension',extension);
-  console.log('url',downloadURL);
-  
+  const downloadURL = getDownloadURL(module, extension)  
   
     fetch(downloadURL, {
       method: 'POST',
@@ -158,3 +152,53 @@ export const downloadFile = async (module, extension) => {
       console.error('There was an error downloading the file:', error);
     });
 };
+export const getProfiles = async () => {
+  const url = `${base}get_profiles/`
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    return jsonResponse
+    
+  } catch (error) {
+    console.error('Error in fetch:', error);
+    loadingStore.set(false);
+    showVisualStore.set(false)
+  } 
+}
+
+
+export const getProfile = async (profile) => {
+  const url = `${base}get_profile/${profile}`
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    return jsonResponse
+    
+  } catch (error) {
+    console.error('Error in fetch:', error);
+    loadingStore.set(false);
+    showVisualStore.set(false)
+  } 
+}

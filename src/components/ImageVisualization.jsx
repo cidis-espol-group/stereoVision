@@ -13,11 +13,6 @@ const ImageVisualization = () =>{
     const showVisualization =useStore(showVisualStore)
     const tab = useStore(activeTabStore)
 
-    useEffect(() =>{
-        console.log(showVisualization);
-        
-    })
-
     return(
         <div className={`px-8 pt-8 ${ showVisualization ? 'visible': 'hidden' }`}>
             <div className="flex justify-center mb-6">

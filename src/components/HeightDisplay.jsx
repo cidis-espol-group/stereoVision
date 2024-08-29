@@ -18,7 +18,7 @@ const HeightDisplay = () =>{
     }, [response]);
 
     return(
-        <div className={`px-8 pb-8  ${ showVisualization ? 'visible': 'hidden' }`}>
+        <div className={`p-8  ${ showVisualization ? 'visible': 'hidden' }`}>
             
             {response ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-3/4 mx-auto">
@@ -55,49 +55,49 @@ const HeightDisplay = () =>{
                 </div>
             </div>)
             :
-            (<div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-3/4 mx-auto">
-                <div className="grid grid-cols-3 grid-rows-2 shadow-md">
-                    <div className="col-span-3 bg-[#14788E] text-white p-2 text-center rounded-t-lg font-semibold text-lg">
-                        Height
+            (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-3/4 mx-auto">
+                    <div className="grid grid-cols-3 grid-rows-2 shadow-md">
+                        <div className="col-span-3 bg-[#14788E] text-white p-2 text-center rounded-t-lg font-semibold text-lg">
+                            Height
+                        </div>
+                        <div className="animate-pulse contents text-center">
+                            <div className="row-start-2 border font-semibold py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="col-span-2 row-start-2 border py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="row-start-3 border font-semibold py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="col-span-2 row-start-3 border py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="animate-pulse contents text-center">
-                        <div className="row-start-2 border font-semibold py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                        <div className="col-span-2 row-start-2 border py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                        <div className="row-start-3 border font-semibold py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                        <div className="col-span-2 row-start-3 border py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="grid grid-cols-3 grid-rows-2 shadow-md">
-                    <div className="col-span-3 bg-[#14788E] text-white p-2 text-center rounded-t-lg font-semibold text-lg">
-                        Depth
-                    </div>
-                    <div className="animate-pulse contents text-center">
-                        <div className="row-start-2 border font-semibold py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                    <div className="grid grid-cols-3 grid-rows-2 shadow-md">
+                        <div className="col-span-3 bg-[#14788E] text-white p-2 text-center rounded-t-lg font-semibold text-lg">
+                            Depth
                         </div>
-                        <div className="col-span-2 row-start-2 border py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                        <div className="row-start-3 border font-semibold py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
-                        </div>
-                        <div className="col-span-2 row-start-3 border py-2">
-                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                        <div className="animate-pulse contents text-center">
+                            <div className="row-start-2 border font-semibold py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="col-span-2 row-start-2 border py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="row-start-3 border font-semibold py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
+                            <div className="col-span-2 row-start-3 border py-2">
+                                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        )
-}
+            )}
         </div>
     )
 };
