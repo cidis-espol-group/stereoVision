@@ -78,7 +78,7 @@ function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color})
 
   return (
     <Canvas
-      camera={{ position: [0, 0, -2500], near: 0.1, far: 100000 }} 
+      camera={{ position: [0, 0, -100], near: 0.1, far: 100000 }} 
       className='h-full'
       style={{ height: '100vh'}}
     >

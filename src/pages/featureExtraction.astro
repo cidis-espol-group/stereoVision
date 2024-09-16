@@ -1,6 +1,9 @@
 ---
 
 import Features from '../components/Features';
+import ImageVisualization from '../components/ImageVisualization';
+import Tabs from '../components/Tabs';
+import CloudVisualization from '../layouts/CloudVisualization';
 import Layout from '../layouts/Layout.astro';
 
 ---
@@ -8,5 +11,11 @@ import Layout from '../layouts/Layout.astro';
 
 
 <Layout title='Feature Extraction'>
-  <Features client:load/>
+  <!-- <Features client:load/> -->
+  <Tabs module="feature-extraction" client:load />
+
+  <ImageVisualization client:load/>
+
+  <CloudVisualization title={'FEATURE EXTRACTION'} module={"feature-extraction"} client:load/>
+  
 </Layout >

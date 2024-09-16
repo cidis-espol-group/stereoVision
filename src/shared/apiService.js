@@ -24,12 +24,14 @@ const getURL = (module, parameters) => {
         generatedUrl = `${base}generate_point_cloud/nodense/individual/?use_roi=${parameters.useRoi}&use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
         break;
       case 'feature-extraction':
-        generatedUrl = base;
+        generatedUrl = `${base}generate_point_cloud/nodense/features/`;
         break;
       default:
         generatedUrl = '';
         break;
     }
+    console.log(module, generatedUrl);
+    
     return generatedUrl;
 };
 
@@ -90,6 +92,7 @@ export const sendPostRequest = async (data, module, parameters) => {
     } 
 
     const jsonResponse = await response.json();
+    console.log(jsonResponse);
     
     responseStore.set(jsonResponse);
     // showContentStore.set(true); 

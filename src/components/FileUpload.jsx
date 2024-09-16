@@ -39,7 +39,6 @@ const FileUpload = ({module }) => {
     }
   };
 
-  /////TODO: arreglar el handle drop, no se actualiza nada cuando se arrastra la imagen
   const handleDrop = (event, setImage, store) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];

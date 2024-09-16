@@ -185,3 +185,18 @@ export const data = {
     [1, 0]
   ]
 };
+
+export const visualizationConfig = {
+  showPoints: true,
+  showPersonCentroid: true,
+  showChestPlane: true,
+  ShowFacePlane: true,
+  showArrow: true,
+  ShowFaceCentroid: true,
+  ShowFaceArrow: true,
+  ShowGroupCentroid: true,
+  ShowGroupArrow: true,
+  ShowGroupLine: true,
+  ShowGroupFaceCentroid: true,
+  ShowGroupFaceArrow: true
+};

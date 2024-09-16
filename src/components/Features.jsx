@@ -2,44 +2,58 @@ import React, {useRef} from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OrbitControls, Line } from '@react-three/drei';
-import { data } from "../shared/json";
+import { visualizationConfigStore } from '../shared/imagesStore';
+import { useStore } from '@nanostores/react';
+// import { data, visualizationConfig } from "../shared/json";
 
 function generateRandomColor() {
   const randomColor = new THREE.Color(Math.random(), Math.random(), Math.random());
   return `#${randomColor.getHexString()}`;
 }
 
-function renderPoints(points) {
+function renderPoints(points, color, size=2) {
   return points.map((point, index) => (
     <mesh key={index} position={point}>
-      <sphereGeometry args={[2, 16, 16]} />
-      <meshStandardMaterial color="blue" />
+      <sphereGeometry args={[size, 16, 16]} />
+      <meshStandardMaterial color={color} />
     </mesh>
   ));
 }
 
-function renderCentroid(centroid, color) {
+function renderCentroid(centroid, color, size=3) {
   return (
     <mesh position={centroid}>
-      <sphereGeometry args={[3, 16, 16]} />
+      <sphereGeometry args={[size, 16, 16]} />
       <meshStandardMaterial color={color}/>
     </mesh>
   );
 }
 
-function connectPoints(points, color, sort) {
+function connectPoints(points, color, sort=false, lineWidth=2) {
   const sortedPoints = sort ? points.sort((a, b) => b[0] - a[0]): points;
   return (
     <Line
       points={sortedPoints}
-      color={'blue'}
-      lineWidth={2}
+      color={color}
+      lineWidth={lineWidth}
+    />
+  );
+}
+
+
+function renderArrowFromNormal(startPoint, normal, color) {
+  const direction = new THREE.Vector3(...normal).normalize();
+  const length = 60;
+
+  return (
+    <primitive
+      object={new THREE.ArrowHelper(direction, new THREE.Vector3(...startPoint), length, color)}
     />
   );
 }
 
 class Person {
-  constructor(personData, color) {
+  constructor(personData, color, visualizationConfig) {
     this.points = personData.points;
     this.centroid = personData.centroid;
     this.pointsTronco = personData.points_tronco;
@@ -48,6 +62,7 @@ class Person {
     this.troncoNormal = personData.tronco_normal;
     this.headNormal = personData.head_normal;
     this.color = color;
+    this.config = visualizationConfig;
   }
 
   renderPlaneFromPoints(points, fillColor) {
@@ -59,7 +74,6 @@ class Person {
 
     return (
       <group>
-        {/* Relleno del plano */}
         <mesh geometry={geometry}>
           <meshBasicMaterial color={fillColor} side={THREE.DoubleSide} transparent opacity={0.5} />
           <lineSegments>
@@ -116,18 +130,6 @@ class Person {
     );
   }
 
-  renderArrowFromNormal(startPoint, normal) {
-    const direction = new THREE.Vector3(...normal).normalize();
-    const length = 60;
-    const color = 'red';
-
-    return (
-      <primitive
-        object={new THREE.ArrowHelper(direction, new THREE.Vector3(...startPoint), length, color)}
-      />
-    );
-  }
-
   headCentroid(centroid, nose){
     return [centroid[0], nose[1], centroid[2]]
   }
@@ -135,62 +137,106 @@ class Person {
   render() {
     return (
       <>
-      {/* {this.renderFacePlane(this.centroid, this.headNormal)} */}
-        {/* {this.renderFacePlane(this.headCentroid(this.centroid, this.pointsHead[0]), this.headNormal)} */}
-        {/* {this.renderLine(this.centroid, this.troncoNormal, 10)} */}
-        {/* {this.renderArrow(this.headCentroid(this.centroid, this.pointsHead[0]), this.headNormal)} */}
-        {/* {renderCentroid(this.headCentroid(this.centroid, this.pointsHead[0]))} */}
-        {/* {this.renderLine(this.pointsHead[0], this.headNormal, 3)} */}
-
-        {renderPoints(this.points)} {/* Renderiza los keypoints */}
-        {renderCentroid(this.centroid, 'red')} {/* Renderiza el centroide de la persona */}
-        {this.renderPlaneFromPoints(this.pointsTronco, this.color)}  {/* Renderiza el plano del tronco */}        
-        {this.renderArrowFromNormal(this.centroid, this.troncoNormal)} {/* Renderiza la flecha del tronco */}
-        {this.centroidToNose /* Renderiza la el centroide de la cabeza */
+        {this.config.showKeypoints &&
+          renderPoints(this.points, 'cyan')} {/* Renderiza los keypoints si showKeypoints es true */}
+    
+        {this.config.showPersonCentroid &&
+          renderCentroid(this.centroid, 'red')} {/* Renderiza el centroide si showPersonCentroid es true */}
+    
+        {this.config.showChestPlane &&
+          this.renderPlaneFromPoints(this.pointsTronco, this.color)} {/* Renderiza el plano del tronco si showChestPlane es true */}
+    
+        {this.config.showNormalVector &&
+          renderArrowFromNormal(this.centroid, this.troncoNormal, 'red')} {/* Renderiza la normal del tronco si showNormalVector es true */}
+    
+        {this.centroidToNose
           ? (
             <>
-              {renderCentroid(this.headCentroid(this.centroid, this.pointsHead[0]), 'red')} {/* Sube el centroide de la persona a la nariz */}
-              {this.renderArrowFromNormal(this.headCentroid(this.centroid, this.pointsHead[0]), this.headNormal)} 
+              {this.config.ShowHeadCentroid &&
+                renderCentroid(
+                  this.headCentroid(this.centroid, this.pointsHead[0]),
+                  'red'
+                )} {/* Sube el centroide de la persona a la nariz */}
+    
+              {this.config.ShowHeadPlane &&
+                this.renderPlaneFromCentroid(
+                  this.headCentroid(this.centroid, this.pointsHead[0]),
+                  this.headNormal,
+                  25,
+                  30
+                )} {/* Renderiza un plano en la cabeza de la persona */}
+    
+              {this.config.ShowHeadNormalVector &&
+                renderArrowFromNormal(
+                  this.headCentroid(this.centroid, this.pointsHead[0]),
+                  this.headNormal,
+                  'red'
+                )} {/* Renderiza la normal desde el centroide elegido */}
             </>
           )
           : (
             <>
-              {renderCentroid(this.pointsHead[0], 'red')} {/* Pone el centroide en la nariz */}
-              {this.renderArrowFromNormal(this.pointsHead[0], this.headNormal)}
+              {this.config.ShowHeadCentroid &&
+                renderCentroid(this.pointsHead[0], 'red')} {/* Pone el centroide en la nariz */}
+    
+              {this.config.ShowHeadPlane &&
+                this.renderPlaneFromCentroid(
+                  this.pointsHead[0],
+                  this.headNormal,
+                  25,
+                  30
+                )} {/* Renderiza un plano en la cabeza de la persona */}
+    
+              {this.config.ShowHeadNormalVector &&
+                renderArrowFromNormal(this.pointsHead[0], this.headNormal, 'red')} {/* Renderiza la normal desde el centroide elegido */}
             </>
           )
         }
       </>
-    );
+    )
+    
   }
 }
 
 class Feature {
-  constructor(data) {
+  constructor(data, visualizationConfig) {
     this.persons = Object.values(data.persons).map(
-      (personData) => new Person(personData, generateRandomColor()) 
+      (personData) => new Person(personData, generateRandomColor(), visualizationConfig) 
     );
+    this.data = data
     this.centroids = this.persons.map((person) => person.centroid)
+    this.bodyColor = 'blue'
+    this.lineColor = 'yellow'
+    this.faceColor = 'green'
+    this.config = visualizationConfig
   }
+
+  
 
   render() {
     return (
       <>
         {this.persons.map((person, index) => <group key={index}>{person.render()}</group>)} {/* Renderiza las personas */}
-        {renderCentroid(data.centroid, 'blue')} {/* Renderiza el centroide del grupo */}
-        {connectPoints(this.centroids, 'blue', true)} {/* Renderiza la linea de la forma del grupo */}
+        {this.config.ShowGroupCentroid && renderCentroid(this.data.centroid, this.bodyColor, 5)} {/* Renderiza el centroide del grupo */}
+        {this.config.ShowGroupNormalVector && renderArrowFromNormal(this.data.centroid, this.data.avg_normal, this.bodyColor)} {/* Renderiza la normal del grupo */}
+        
+        {this.config.ShowGroupLine && connectPoints(this.centroids, this.lineColor, true, 3)} {/* Renderiza la linea de la forma del grupo */}
+        
+        {this.config.ShowGroupHeadCentroid && renderCentroid(this.data.centroid_head, this.faceColor, 5)} {/* Renderiza el centroide de la cabezas del grupo */}
+        {this.config.ShowGroupHeadNormalVector && renderArrowFromNormal(this.data.centroid_head, this.data.avg_normal_head, this.faceColor)} {/* Renderiza la normal de las cabezas del grupo */}
       </>
     )
 
   }
 }
 
-export default function App() {
-  const feature = new Feature(data);
-
+const Features = ({features}) => {
+  const visualizationConfig = useStore(visualizationConfigStore);
+  const feature = new Feature(features, visualizationConfig);
+  
   return (
     <Canvas 
-      camera={{ position: [0, 0, 2500], near: 0.1, far: 100000, fov: 75 }}
+      camera={{ position: [0, 0, -100], near: 0.1, far: 100000, fov: 75 }}
       className='h-full w-full '
       style={{ height: '100vh'}}
     >
@@ -211,3 +257,5 @@ export default function App() {
     </Canvas>
   );
 }
+
+export default Features;
