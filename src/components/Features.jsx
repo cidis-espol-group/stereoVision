@@ -1,9 +1,10 @@
 import React, {useRef} from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { OrbitControls, Line } from '@react-three/drei';
+import { OrbitControls, Line, Text } from '@react-three/drei';
 import { visualizationConfigStore } from '../shared/imagesStore';
 import { useStore } from '@nanostores/react';
+import GridCube from './utils/GridCube';
 // import { data, visualizationConfig } from "../shared/json";
 
 function generateRandomColor() {
@@ -230,6 +231,49 @@ class Feature {
   }
 }
 
+
+const AxesHelperWithLabels = ({ size }) => {
+  const halfSize = size / 2;
+  
+  // Refs para las etiquetas
+  const xLabelRef = useRef();
+  const yLabelRef = useRef();
+  const zLabelRef = useRef();
+
+  // En cada frame, orienta las etiquetas hacia la cámara
+  useFrame(({ camera }) => {
+    if (xLabelRef.current) {
+      xLabelRef.current.lookAt(camera.position);
+    }
+    if (yLabelRef.current) {
+      yLabelRef.current.lookAt(camera.position);
+    }
+    if (zLabelRef.current) {
+      zLabelRef.current.lookAt(camera.position);
+    }
+  });
+
+  return (
+    <group>
+      {/* AxesHelper estándar */}
+      <axesHelper args={[size]} />
+
+      {/* Etiquetas para cada eje que siempre se orientan hacia la cámara */}
+      <Text ref={xLabelRef} position={[size + 2, 0, 0]} fontSize={4} color="red">
+        X
+      </Text> {/* Etiqueta para el eje X */}
+
+      <Text ref={yLabelRef} position={[0, size + 2, 0]} fontSize={4} color="green">
+        Y
+      </Text> {/* Etiqueta para el eje Y */}
+
+      <Text ref={zLabelRef} position={[0, 0, size + 2 ]} fontSize={4} color="blue">
+        Z
+      </Text> {/* Etiqueta para el eje Z */}
+    </group>
+  );
+};
+
 const Features = ({features}) => {
   const visualizationConfig = useStore(visualizationConfigStore);
   const feature = new Feature(features, visualizationConfig);
@@ -242,9 +286,14 @@ const Features = ({features}) => {
     >
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
+
       <group scale={[-1, -1, 1]}>
         {feature.render()}
       </group>
+
+      {/* <axesHelper args={[25]} /> */}
+      <AxesHelperWithLabels size={25} />
+      <GridCube size={400}/>
 
       <OrbitControls 
         enableDamping 

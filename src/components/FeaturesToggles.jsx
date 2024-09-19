@@ -45,20 +45,19 @@ const FeaturesToggles = () => {
 
   return (
     <>
-
-<div class="flex items-center align-middle">
-        <div class="flex-grow border-t border-gray-400"></div>
+      <div className="flex items-center align-middle">
+        <div className="flex-grow border-t border-gray-400"></div>
         <h2 className="mx-4 font-bold text-2xl text-center my-3">People features</h2>
-        <div class="flex-grow border-t border-gray-400"></div>
+        <div className="flex-grow border-t border-gray-400"></div>
       </div>
       <div className="flex flex-wrap">
         {peopleFeatures.map(renderToggle)}
       </div>
 
-      <div class="flex items-center align-middle">
-        <div class="flex-grow border-t border-gray-400"></div>
+      <div className="flex items-center align-middle">
+        <div className="flex-grow border-t border-gray-400"></div>
         <h2 className="mx-4 font-bold text-2xl text-center my-3">Group features</h2>
-        <div class="flex-grow border-t border-gray-400"></div>
+        <div className="flex-grow border-t border-gray-400"></div>
       </div>
       <div className="flex flex-wrap">
         {groupFeatures.map(renderToggle)}
