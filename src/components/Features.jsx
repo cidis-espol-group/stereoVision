@@ -12,6 +12,11 @@ function generateRandomColor() {
   return `#${randomColor.getHexString()}`;
 }
 
+function get_color(index) {
+  const colors = ['#673C4F', '#6a8d73', '#353831', '#2AB7CA', '#A03E99', '#474A2C']
+  return colors[index]
+}
+
 function renderPoints(points, color, size=2) {
   return points.map((point, index) => (
     <mesh key={index} position={point}>
@@ -202,7 +207,7 @@ class Person {
 class Feature {
   constructor(data, visualizationConfig) {
     this.persons = Object.values(data.persons).map(
-      (personData) => new Person(personData, generateRandomColor(), visualizationConfig) 
+      (personData, index) => new Person(personData, get_color(index), visualizationConfig) 
     );
     this.data = data
     this.centroids = this.persons.map((person) => person.centroid)
