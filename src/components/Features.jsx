@@ -274,7 +274,7 @@ const AxesHelperWithLabels = ({ size }) => {
   );
 };
 
-const Features = ({features}) => {
+const Features = ({features, max_coords}) => {
   const visualizationConfig = useStore(visualizationConfigStore);
   const feature = new Feature(features, visualizationConfig);
   
@@ -293,7 +293,7 @@ const Features = ({features}) => {
 
       {/* <axesHelper args={[25]} /> */}
       <AxesHelperWithLabels size={25} />
-      <GridCube size={400}/>
+      <GridCube limits={max_coords}/>
 
       <OrbitControls 
         enableDamping 
