@@ -2,18 +2,18 @@ import React, { useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 
-const CustomGridHelper = ({ sizeX, sizeY, divisionsX, divisionsY, color, position, rotation }) => {
-  // Crear la geometría de la cuadrícula manualmente
+const CustomGridHelper = ({ ref, sizeX, sizeY, divisionsX, divisionsY, color, position, rotation }) => {
+  // geometría de la cuadrícula
   const geometry = new THREE.BufferGeometry();
   const vertices = [];
 
-  // Crear las líneas en el eje X (paralelas a Y)
+  // Líneas en el eje X (paralelas a Y)
   for (let i = 0; i <= divisionsY; i++) {
     const y = (i / divisionsY) * sizeY - sizeY / 2;
     vertices.push(-sizeX / 2, y, 0, sizeX / 2, y, 0);
   }
 
-  // Crear las líneas en el eje Y (paralelas a X)
+  // Líneas en el eje Y (paralelas a X)
   for (let i = 0; i <= divisionsX; i++) {
     const x = (i / divisionsX) * sizeX - sizeX / 2;
     vertices.push(x, -sizeY / 2, 0, x, sizeY / 2, 0);
@@ -22,14 +22,19 @@ const CustomGridHelper = ({ sizeX, sizeY, divisionsX, divisionsY, color, positio
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
   return (
-    <lineSegments geometry={geometry} position={position} rotation={rotation}>
+    <lineSegments ref={ref} geometry={geometry} position={position} rotation={rotation}>
       <lineBasicMaterial color={color} />
     </lineSegments>
   );
 };
 
 const GridCube = ({ limits }) => {
-  const [max_x, max_y, max_z] = limits; // Lista [max_x, max_y, max_z]
+  console.log(limits);
+  
+  const separation = 20
+  const max_x = limits[0]*2+separation
+  const max_y = limits[1]*2+separation
+  const max_z = limits[2]+separation
   const divisions = 10;
   const gridColor = '#cccccc'; // Definir un color gris claro
 
@@ -41,7 +46,7 @@ const GridCube = ({ limits }) => {
   const topPlane = useRef();
   const bottomPlane = useRef();
 
-  // En cada frame, verifica la dirección de la cámara y actualizar la visibilidad
+  // En cada frame, verifica la dirección de la cámara y actualiza la visibilidad
   useFrame(({ camera }) => {
     const cameraDirection = camera.getWorldDirection(new THREE.Vector3()).normalize();
 
@@ -73,7 +78,7 @@ const GridCube = ({ limits }) => {
         divisionsY={divisions}
         color={gridColor}
         position={[0, 0, 0]}
-        rotation={[Math.PI / 2, Math.PI / 2, 0]}
+        rotation={[0, 0, 0]}
       />
 
       {/* Plano XY (posterior) */}
@@ -84,8 +89,8 @@ const GridCube = ({ limits }) => {
         divisionsX={divisions}
         divisionsY={divisions}
         color={gridColor}
-        position={[0, 0, -max_z]}
-        rotation={[Math.PI / 2, Math.PI / 2, 0]}
+        position={[0, 0, max_z]}
+        rotation={[0, 0 / 2, 0]}
       />
 
       {/* Plano YZ (lateral derecho) */}
@@ -96,8 +101,8 @@ const GridCube = ({ limits }) => {
         divisionsX={divisions}
         divisionsY={divisions}
         color={gridColor}
-        position={[max_x / 2, 0, -max_z / 2]}
-        rotation={[0, 0, Math.PI / 2]}
+        position={[max_x / 2, 0, max_z / 2]}
+        rotation={[0, Math.PI / 2, 0]}
       />
 
       {/* Plano YZ (lateral izquierdo) */}
@@ -108,8 +113,8 @@ const GridCube = ({ limits }) => {
         divisionsX={divisions}
         divisionsY={divisions}
         color={gridColor}
-        position={[-max_x / 2, 0, -max_z / 2]}
-        rotation={[Math.PI / 2, 0, Math.PI / 2]}
+        position={[-max_x / 2, 0, max_z / 2]}
+        rotation={[0, Math.PI / 2, 0]}
       />
 
       {/* Plano XZ (base) */}
@@ -120,7 +125,8 @@ const GridCube = ({ limits }) => {
         divisionsX={divisions}
         divisionsY={divisions}
         color={gridColor}
-        position={[0, -max_y / 2, -max_z / 2]}
+        position={[0, -max_y / 2, max_z / 2]}
+        rotation={[Math.PI / 2, 0, 0]}
       />
 
       {/* Plano XZ (techo) */}
@@ -131,7 +137,8 @@ const GridCube = ({ limits }) => {
         divisionsX={divisions}
         divisionsY={divisions}
         color={gridColor}
-        position={[0, max_y / 2, -max_z / 2]}
+        position={[0, max_y / 2, max_z / 2]}
+        rotation={[Math.PI / 2, 0, 0]}
       />
     </group>
   );

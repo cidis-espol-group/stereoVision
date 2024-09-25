@@ -50,6 +50,7 @@ const CloudVisualization = ({ title, module }) => {
                             <div id="visualization-content">
                                 {module === 'feature-extraction' && (
                                     <Features features={response.features} max_coords={response.max_coords}/>
+                                    // <Features features={response.features} max_coords={[50.315, 50.941, 356.8]}/>
                                 )}
                                 
                                 {module === 'dense-point-cloud' && (

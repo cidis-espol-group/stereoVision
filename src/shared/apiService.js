@@ -56,7 +56,7 @@ const throwError = (response) => {
   let errorMessage;
         switch(response.status) {
           case 500:
-            errorMessage = 'No se detectaron personas. Intente otra vez.';
+            errorMessage = `500 Internal Server Error.`;
             break;
           case 404:
             errorMessage = 'No Encontrado: 404';
@@ -68,7 +68,7 @@ const throwError = (response) => {
             errorMessage = 'Solicitud Incorrecta: 400';
             break;
           default:
-            errorMessage = `Error HTTP: ${response.status}, ${response.statusText}`;
+            errorMessage = `Error HTTP: ${response.status}, ${response.statusText}. ${response.detail}`;
         }
       alert(errorMessage); // Muestra una alerta en pantalla
       throw new Error(errorMessage);

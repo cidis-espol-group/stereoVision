@@ -70,7 +70,7 @@ class Person {
     this.color = color;
     this.config = visualizationConfig;
   }
-
+  
   renderPlaneFromPoints(points, fillColor) {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(points.flat());
@@ -282,7 +282,7 @@ const AxesHelperWithLabels = ({ size }) => {
 const Features = ({features, max_coords}) => {
   const visualizationConfig = useStore(visualizationConfigStore);
   const feature = new Feature(features, visualizationConfig);
-  
+
   return (
     <Canvas 
       camera={{ position: [0, 0, -100], near: 0.1, far: 100000, fov: 75 }}
