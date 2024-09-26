@@ -1,6 +1,7 @@
 import React, { useRef, forwardRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { Text } from '@react-three/drei';
 
 const CustomGridHelper = forwardRef(({ sizeX, sizeY, divisionsX, divisionsY, color, position, rotation }, ref) => {
   // Crear la geometría de la cuadrícula manualmente
@@ -37,6 +38,7 @@ const GridCube = ({ limits }) => {
   const max_z = limits[2]+separation
   const divisions = 10;
   const gridColor = '#cccccc'; // Definir un color gris claro
+  const fontSize = 20
 
   // Refs para los planos
   const frontPlane = useRef();
@@ -45,6 +47,14 @@ const GridCube = ({ limits }) => {
   const rightPlane = useRef();
   const topPlane = useRef();
   const bottomPlane = useRef();
+
+  // Refs para las etiquetas
+  const xRightLabel = useRef();
+  const yRightLabel = useRef();
+  const zRightLabel = useRef();
+  const xLeftLabel = useRef();
+  const yLeftLabel = useRef();
+  const zLeftLabel = useRef();
 
   // En cada frame, verifica la dirección de la cámara y actualiza la visibilidad
   useFrame(({ camera }) => {
@@ -65,6 +75,13 @@ const GridCube = ({ limits }) => {
     if (rightPlane.current) rightPlane.current.visible = showRight;
     if (topPlane.current) topPlane.current.visible = showTop;
     if (bottomPlane.current) bottomPlane.current.visible = showBottom;
+
+    if (xRightLabel.current) xRightLabel.current.lookAt(camera.position);
+    if (yRightLabel.current) yRightLabel.current.lookAt(camera.position);
+    if (zRightLabel.current) zRightLabel.current.lookAt(camera.position);
+    if (xLeftLabel.current) xLeftLabel.current.lookAt(camera.position);
+    if (yLeftLabel.current) yLeftLabel.current.lookAt(camera.position);
+    if (zLeftLabel.current) zLeftLabel.current.lookAt(camera.position);
   });
 
   return (
@@ -140,6 +157,30 @@ const GridCube = ({ limits }) => {
         position={[0, max_y / 2, max_z / 2]}
         rotation={[Math.PI / 2, 0, 0]}
       />
+
+      {/* Etiqueta para el eje X (Izquierda)*/}
+      {/* <Text ref={xLeftLabel} position={[max_x / 2 + separation, max_y / 2, max_z / 2]} fontSize={fontSize} color="red">
+        X
+      </Text>  */}
+
+      {/* Etiqueta para el eje X (Derecha)*/}
+      <Text ref={xRightLabel} position={[0, max_y / 2 + separation, max_z ]} fontSize={fontSize} color="red">
+        X
+      </Text> 
+
+      {/* Etiqueta para el eje Y */}
+      <Text ref={yRightLabel} position={[- max_x / 2 - separation, 0, max_z]} fontSize={fontSize} color="green">
+        Y
+      </Text> 
+
+      {/* Etiqueta para el eje Z */}
+      {/* <Text ref={zRightLabel} position={[max_x / 2 + separation, -max_y / 2, max_z / 2]} fontSize={fontSize} color="blue">
+        Z
+      </Text>  */}
+
+      <Text ref={zRightLabel} position={[-max_x / 2 - separation, -max_y / 2, max_z / 2]} fontSize={fontSize} color="blue">
+        Z
+      </Text> 
     </group>
   );
 };

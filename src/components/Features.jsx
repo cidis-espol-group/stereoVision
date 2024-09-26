@@ -13,7 +13,7 @@ function generateRandomColor() {
 }
 
 function get_color(index) {
-  const colors = ['#673C4F', '#6a8d73', '#353831', '#2AB7CA', '#A03E99', '#474A2C']
+  const colors = ['#FC7A1E', '#B0E298', '#E072A4', '#82A6B1', '#353831', '#2AB7CA', ]
   return colors[index]
 }
 
@@ -144,16 +144,16 @@ class Person {
     return (
       <>
         {this.config.showKeypoints &&
-          renderPoints(this.points, 'cyan')} {/* Renderiza los keypoints si showKeypoints es true */}
+          renderPoints(this.points, this.color)} {/* Renderiza los keypoints si showKeypoints es true */}
     
         {this.config.showPersonCentroid &&
-          renderCentroid(this.centroid, 'red')} {/* Renderiza el centroide si showPersonCentroid es true */}
+          renderCentroid(this.centroid, this.color)} {/* Renderiza el centroide si showPersonCentroid es true */}
     
         {this.config.showChestPlane &&
           this.renderPlaneFromPoints(this.pointsTronco, this.color)} {/* Renderiza el plano del tronco si showChestPlane es true */}
     
         {this.config.showNormalVector &&
-          renderArrowFromNormal(this.centroid, this.troncoNormal, 'red')} {/* Renderiza la normal del tronco si showNormalVector es true */}
+          renderArrowFromNormal(this.centroid, this.troncoNormal, this.color)} {/* Renderiza la normal del tronco si showNormalVector es true */}
     
         {this.centroidToNose
           ? (
@@ -161,7 +161,7 @@ class Person {
               {this.config.ShowHeadCentroid &&
                 renderCentroid(
                   this.headCentroid(this.centroid, this.pointsHead[0]),
-                  'red'
+                  this.color
                 )} {/* Sube el centroide de la persona a la nariz */}
     
               {this.config.ShowHeadPlane &&
@@ -176,14 +176,14 @@ class Person {
                 renderArrowFromNormal(
                   this.headCentroid(this.centroid, this.pointsHead[0]),
                   this.headNormal,
-                  'red'
+                  this.color
                 )} {/* Renderiza la normal desde el centroide elegido */}
             </>
           )
           : (
             <>
               {this.config.ShowHeadCentroid &&
-                renderCentroid(this.pointsHead[0], 'red')} {/* Pone el centroide en la nariz */}
+                renderCentroid(this.pointsHead[0], this.color)} {/* Pone el centroide en la nariz */}
     
               {this.config.ShowHeadPlane &&
                 this.renderPlaneFromCentroid(
@@ -194,7 +194,7 @@ class Person {
                 )} {/* Renderiza un plano en la cabeza de la persona */}
     
               {this.config.ShowHeadNormalVector &&
-                renderArrowFromNormal(this.pointsHead[0], this.headNormal, 'red')} {/* Renderiza la normal desde el centroide elegido */}
+                renderArrowFromNormal(this.pointsHead[0], this.headNormal, this.color)} {/* Renderiza la normal desde el centroide elegido */}
             </>
           )
         }
@@ -297,7 +297,7 @@ const Features = ({features, max_coords}) => {
       </group>
 
       {/* <axesHelper args={[25]} /> */}
-      <AxesHelperWithLabels size={25} />
+      {/* <AxesHelperWithLabels size={25} /> */}
       <GridCube limits={max_coords}/>
 
       <OrbitControls 
