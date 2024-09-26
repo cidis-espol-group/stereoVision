@@ -1,19 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 
-const CustomGridHelper = ({ ref, sizeX, sizeY, divisionsX, divisionsY, color, position, rotation }) => {
-  // geometría de la cuadrícula
+const CustomGridHelper = forwardRef(({ sizeX, sizeY, divisionsX, divisionsY, color, position, rotation }, ref) => {
+  // Crear la geometría de la cuadrícula manualmente
   const geometry = new THREE.BufferGeometry();
   const vertices = [];
 
-  // Líneas en el eje X (paralelas a Y)
+  // Crear las líneas en el eje X (paralelas a Y)
   for (let i = 0; i <= divisionsY; i++) {
     const y = (i / divisionsY) * sizeY - sizeY / 2;
     vertices.push(-sizeX / 2, y, 0, sizeX / 2, y, 0);
   }
 
-  // Líneas en el eje Y (paralelas a X)
+  // Crear las líneas en el eje Y (paralelas a X)
   for (let i = 0; i <= divisionsX; i++) {
     const x = (i / divisionsX) * sizeX - sizeX / 2;
     vertices.push(x, -sizeY / 2, 0, x, sizeY / 2, 0);
@@ -26,7 +26,7 @@ const CustomGridHelper = ({ ref, sizeX, sizeY, divisionsX, divisionsY, color, po
       <lineBasicMaterial color={color} />
     </lineSegments>
   );
-};
+});
 
 const GridCube = ({ limits }) => {
   console.log(limits);
@@ -56,8 +56,8 @@ const GridCube = ({ limits }) => {
     const showRight = cameraDirection.x > 0; // Muestra el plano derecho cuando se mira desde la izquierda (x positivo)
     const showLeft = cameraDirection.x < 0; // Muestra el plano izquierdo cuando se mira desde la derecha (x negativo)
 
-    const showBottom = cameraDirection.y > 0; // Muestra la base si la cámara está mirando hacia abajo (mirando el plano inferior)
-    const showTop = cameraDirection.y < 0; // Muestra el techo si la cámara está mirando hacia arriba
+    const showBottom = cameraDirection.y < 0; // Muestra la base si la cámara está mirando hacia abajo (mirando el plano inferior)
+    const showTop = cameraDirection.y > 0; // Muestra el techo si la cámara está mirando hacia arriba
 
     if (frontPlane.current) frontPlane.current.visible = showFront;
     if (backPlane.current) backPlane.current.visible = showBack;
