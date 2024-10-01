@@ -18,7 +18,7 @@ const HeightDisplay = () =>{
     }, [response]);
 
     return(
-        <div className={`p-8  ${ showVisualization ? 'visible': 'hidden' }`}>
+        <div id="visualization" className={`p-8  ${ showVisualization ? 'visible': 'hidden' }`}>
             
             {response ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-3/4 mx-auto">

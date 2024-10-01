@@ -67,7 +67,7 @@ const FileUpload = ({module }) => {
     } else if (!profile) {
       alert('Please select a robot profile.');
       return;
-    } else if (!method) {
+    } else if (!method && module!='height-estimation-face') {
       alert('Please select a generation method.');
       return;
     }
@@ -80,7 +80,7 @@ const FileUpload = ({module }) => {
     formData.append('img_left', imgLeft); // leftImageFile es el archivo
     formData.append('img_right', imgRight); // rightImageFile es el archivo
     formData.append('profile_name', profile);
-    formData.append('method', method);
+    if ( module !='height-estimation-face') formData.append('method', method);
     
     sendPostRequest(formData, module, checkboxes)
     setTimeout(() => {
