@@ -1,0 +1,15 @@
+---
+import ImageVisualization from '../components/ImageVisualization';
+import HeightDisplay from '../components/HeightDisplay';
+import Tabs from '../components/Tabs';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Height Estimation">
+  <Tabs module="height-estimation-face" client:load />
+
+  <ImageVisualization client:load/>
+
+  <HeightDisplay client:load/>
+
+</Layout>

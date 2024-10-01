@@ -8,7 +8,7 @@ export const loadingStore = atom(false)
 export const showVisualStore = atom(false)
 export const isRoiStore = atom(true)
 
-const base = 'http://127.0.0.1:8000/';
+const base = 'http://192.168.0.100:8081/';
 
 
 const getURL = (module, parameters) => {
@@ -19,6 +19,9 @@ const getURL = (module, parameters) => {
         break;
       case 'height-estimation':
         generatedUrl =`${base}generate_point_cloud/nodense/height_estimation/?use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
+        break;
+      case 'height-estimation-face':
+        generatedUrl =`${base}face/height_estimation/`;
         break;
       case 'no-dense-point-cloud':
         generatedUrl = `${base}generate_point_cloud/nodense/individual/?use_roi=${parameters.useRoi}&use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;

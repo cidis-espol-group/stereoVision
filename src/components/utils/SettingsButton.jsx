@@ -15,7 +15,7 @@ const SettingsButton = () => {
 
   //TODO: Cambiar función de fetch a shared/api
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/get_profiles/',{
+    fetch('http://192.168.0.100:8081/get_profiles/',{
       headers: {
         'Authorization':`Bearer ${apiKey}`,
         'ngrok-skip-browser-warning': 'any'
@@ -57,7 +57,7 @@ const SettingsButton = () => {
 
   const handleDeleteProfile = async (profileName) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/delete_profile/${profileName}`, {
+      const response = await fetch(`http://192.168.0.100:8081/delete_profile/${profileName}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -85,7 +85,7 @@ const SettingsButton = () => {
       formData.append('profile_name', newProfileName);
   
       try {
-        const response = await fetch('http://127.0.0.1:8000/upload_calibration/', {
+        const response = await fetch('http://192.168.0.100:8081/upload_calibration/', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -96,7 +96,7 @@ const SettingsButton = () => {
   
         if (response.ok) {
           // Volvemos a hacer un fetch para obtener la lista actualizada de perfiles
-          const updatedProfilesResponse = await fetch('http://127.0.0.1:8000/get_profiles/', {
+          const updatedProfilesResponse = await fetch('http://192.168.0.100:8081/get_profiles/', {
             headers: {
               'Authorization': `Bearer ${apiKey}`,
               'ngrok-skip-browser-warning': 'any',
