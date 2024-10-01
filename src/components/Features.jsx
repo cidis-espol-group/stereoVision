@@ -212,7 +212,7 @@ class Feature {
     this.data = data
     this.centroids = this.persons.map((person) => person.centroid)
     this.bodyColor = 'blue'
-    this.lineColor = 'yellow'
+    this.lineColor = 'red'
     this.faceColor = 'green'
     this.config = visualizationConfig
   }
