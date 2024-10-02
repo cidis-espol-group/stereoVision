@@ -93,30 +93,57 @@ const FileUpload = ({module }) => {
   return (
     <div className={`p-8`}>
       <div className={`flex justify-between content-center mb-8 `}>
-        <Robots onChange={e => setProfile(e.target.value)}/>
-        <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
-        <Checkbox label="Use max disparity" checked={checkboxes.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
-        <Checkbox label="Normalize" checked={checkboxes.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
-        <ToggleButton leftLabel={'Keypoints'} rightLabel={'ROI'} checked={checkboxes.useRoi} onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
+        <Robots onChange={e => setProfile(e.target.value)} />
+        {module !== 'height-estimation-face' && (
+          <>
+            <Dropdown
+              label="Method"
+              options={['SGBM', 'WLS-SGBM', 'RAFT', 'SELECTIVE']}
+              value={method}
+              onChange={e => setMethod(e.target.value)}
+            />
+            <Checkbox
+              label="Use max disparity"
+              checked={checkboxes.useMaxDisp}
+              onChange={isChecked => handleCheckboxChange('useMaxDisp', isChecked)}
+            />
+            <Checkbox
+              label="Normalize"
+              checked={checkboxes.normalize}
+              onChange={isChecked => handleCheckboxChange('normalize', isChecked)}
+            />
+            <ToggleButton
+              leftLabel={'Keypoints'}
+              rightLabel={'ROI'}
+              checked={checkboxes.useRoi}
+              onChange={isChecked => handleCheckboxChange('useRoi', isChecked)}
+              className={module !== 'no-dense-point-cloud' ? 'hidden' : ''}
+            />
+          </>
+        )}
       </div>
       <div className={`flex justify-center mb-6`}>
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
           <div
             className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
-            onDrop={(e) => handleDrop(e, setImgLeft, leftImgPreview)}
+            onDrop={e => handleDrop(e, setImgLeft, leftImgPreview)}
             onDragOver={handleDragOver}
           >
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => handleFileChange(e, setImgLeft, leftImgPreview)}
+              onChange={e => handleFileChange(e, setImgLeft, leftImgPreview)}
               className="hidden"
               id="imgLeft"
             />
             <label htmlFor="imgLeft" className="cursor-pointer">
               {leftPreview ? (
-                <img src={leftPreview} alt="Preview" className="w-full h-full object-cover" />
+                <img
+                  src={leftPreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div>
                   <p>Drag and drop your files here to upload</p>
@@ -137,19 +164,23 @@ const FileUpload = ({module }) => {
           <p className="mb-2 font-bold">RIGHT</p>
           <div
             className="bg-gray-100 border-dashed border-2 border-gray-400 p-8 rounded-md"
-            onDrop={(e) => handleDrop(e, setImgRight, rightImgPreview)}
+            onDrop={e => handleDrop(e, setImgRight, rightImgPreview)}
             onDragOver={handleDragOver}
           >
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => handleFileChange(e, setImgRight, rightImgPreview)}
+              onChange={e => handleFileChange(e, setImgRight, rightImgPreview)}
               className="hidden"
               id="imgRight"
             />
             <label htmlFor="imgRight" className="cursor-pointer">
               {rightPreview ? (
-                <img src={rightPreview} alt="Preview" className="w-full h-full object-cover" />
+                <img
+                  src={rightPreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div>
                   <p>Drag and drop your files here to upload</p>
@@ -168,10 +199,11 @@ const FileUpload = ({module }) => {
         </div>
       </div>
       <div className={`flex justify-center`}>
-        <Button label={'Continue'} onClick={handleContinue}/>
+        <Button label={'Continue'} onClick={handleContinue} />
       </div>
     </div>
   );
+  
 };
 
 export default FileUpload;

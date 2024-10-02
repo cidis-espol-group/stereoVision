@@ -134,7 +134,7 @@ const LiveContent = ({ module, settings }) => {
 
     const { profile } = settings;
 
-    if (!method) {
+    if (!method && module!='height-estimation-face') {
       alert('Please select a generation method.');
       return;
     }
@@ -149,7 +149,7 @@ const LiveContent = ({ module, settings }) => {
     formData.append('img_left', leftFile);
     formData.append('img_right', rightFile);
     formData.append('profile_name', profile);
-    formData.append('method', method);
+    if ( module !='height-estimation-face') formData.append('method', method);
     
     sendPostRequest(formData, module, parameters);
     setTimeout(() => {
@@ -195,32 +195,87 @@ const LiveContent = ({ module, settings }) => {
 
   return (
     <div className={"pt-8 px-8"}>
-      <video ref={videoRef} autoPlay style={{display:'none'}}></video>
-      <div className={`flex justify-between content-center mb-8 `}>
-        <Dropdown label="Method" options={['SGBM','WLS-SGBM', 'RAFT', 'SELECTIVE']} value={method} onChange={e => setMethod(e.target.value)} />
-        <Checkbox label="Use max disparity" checked={parameters.useMaxDisp} onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}/>
-        <Checkbox label="Normalize" checked={parameters.normalize} onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}/>
-        <Checkbox label="Save Images" checked={parameters.saveImgs} onChange={(isChecked) => handleCheckboxChange('saveImgs', isChecked)}/>
-        <ToggleButton leftLabel={'Keypoints'} rightLabel={'ROI'} checked={parameters.useRoi} onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)} className={module != 'no-dense-point-cloud' ? 'hidden': ''}/>
+      <video ref={videoRef} autoPlay style={{ display: 'none' }}></video>
+      <div
+        className={`flex ${
+          module === 'height-estimation-face' ? 'justify-end' : 'justify-between'
+        } content-center mb-8`}
+      >
+        {module === 'height-estimation-face' ? (
+          <>
+            <Checkbox
+              className={``}
+              label="Save Images"
+              checked={parameters.saveImgs}
+              onChange={isChecked => handleCheckboxChange('saveImgs', isChecked)}
+            />
+          </>
+        ) : (
+          <>
+            <Dropdown
+              label="Method"
+              options={['SGBM', 'WLS-SGBM', 'RAFT', 'SELECTIVE']}
+              value={method}
+              onChange={e => setMethod(e.target.value)}
+            />
+            <Checkbox
+              label="Use max disparity"
+              checked={parameters.useMaxDisp}
+              onChange={isChecked => handleCheckboxChange('useMaxDisp', isChecked)}
+            />
+            <Checkbox
+              label="Normalize"
+              checked={parameters.normalize}
+              onChange={isChecked => handleCheckboxChange('normalize', isChecked)}
+            />
+            <Checkbox
+              label="Save Images"
+              checked={parameters.saveImgs}
+              onChange={isChecked => handleCheckboxChange('saveImgs', isChecked)}
+            />
+            <ToggleButton
+              leftLabel={'Keypoints'}
+              rightLabel={'ROI'}
+              checked={parameters.useRoi}
+              onChange={isChecked => handleCheckboxChange('useRoi', isChecked)}
+              className={module !== 'no-dense-point-cloud' ? 'hidden' : ''}
+            />
+          </>
+        )}
       </div>
-
+  
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
-          <video ref={leftVideoRef} autoPlay className='h-full w-full' width={width} height={height}></video>
+          <video
+            ref={leftVideoRef}
+            autoPlay
+            className="h-full w-full"
+            width={width}
+            height={height}
+          ></video>
           <canvas ref={leftCanvasRef} className="hidden"></canvas>
         </div>
         <div className="w-1/2 text-center ml-4">
           <p className="mb-2 font-bold">RIGHT</p>
-          <video ref={rightVideoRef} autoPlay className='h-full w-full' width={width} height={height}></video>
+          <video
+            ref={rightVideoRef}
+            autoPlay
+            className="h-full w-full"
+            width={width}
+            height={height}
+          ></video>
           <canvas ref={rightCanvasRef} className="hidden"></canvas>
         </div>
       </div>
       <div className="flex justify-center mb-6">
-        <Button label={'Capture'} onClick={captureImage} disabled={loading}/>
+        <Button label={'Capture'} onClick={captureImage} disabled={loading} />
       </div>
     </div>
   );
+  
+
+  
 };
 
 export default LiveContent;
