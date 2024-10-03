@@ -16,6 +16,10 @@ const LiveContent = ({ module, settings }) => {
   const leftCanvasRef = useRef(null);
   const rightCanvasRef = useRef(null);
 
+  const [stream, setStream] = useState(null);
+  const mediaRecorder = useRef(null)
+  const [videoChunks, setVideoChunks] = useState([]) 
+
   const [width, setWidth] = useState(null)
   const [height, setHeight] = useState(null)
 
@@ -72,6 +76,24 @@ const LiveContent = ({ module, settings }) => {
     outputVideo.play();
   };
 
+  const startRecording = async () => {
+    console.log(stream);
+    
+    const media = new MediaRecorder(stream)
+
+    mediaRecorder.current = media;
+    mediaRecorder.current.start();
+    let localVideoChunks = [];
+    mediaRecorder.current.ondataavailable = (event) => {
+      if (typeof event.data === "undefined") return;
+      if (event.data.size === 0) return; 
+      localVideoChunks.push(event.data);
+    }
+    setVideoChunks(localVideoChunks);
+    console.log("grabando");
+    
+  }
+
   useEffect(() => {
     const { fps, resolution } = settings;
     const [width, height] = resolution.toString().split('x').map(Number);
@@ -88,11 +110,20 @@ const LiveContent = ({ module, settings }) => {
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
         videoRef.current.srcObject = stream;
+
+        const videoStream = new MediaStream([
+          ...stream.getVideoTracks()
+        ])
+        setStream(videoStream)
+        console.log(stream);
+        
         
         
         if (leftCanvasRef.current && rightCanvasRef.current && videoRef.current) {
           initializeStream(videoRef.current, leftCanvasRef.current, leftVideoRef.current, true);
           initializeStream(videoRef.current, rightCanvasRef.current, rightVideoRef.current, false);
+
+          // startRecording()
         }
       })
       // .catch((error) => {

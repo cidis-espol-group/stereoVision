@@ -3,13 +3,15 @@ import ImageVisualization from '../components/ImageVisualization';
 import HeightDisplay from '../components/HeightDisplay';
 import Tabs from '../components/Tabs';
 import Layout from '../layouts/Layout.astro';
+
+const module = "height-estimation"
 ---
 
 <Layout title="Height Estimation">
-  <Tabs module="height-estimation" client:load />
+  <Tabs module={module} client:load />
 
   <ImageVisualization client:load/>
 
-  <HeightDisplay client:load/>
+  <HeightDisplay module={module} client:load/>
 
 </Layout>

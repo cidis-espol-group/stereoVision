@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { responseStore } from "../shared/response";
 
 
-const HeightDisplay = () =>{
+const HeightDisplay = ({module}) =>{
     const showVisualization =useStore(showVisualStore)
     const response = useStore(responseStore)
 
@@ -12,8 +12,15 @@ const HeightDisplay = () =>{
 
     useEffect(() => {
         if (response) {
-            const newPersons = Object.keys(response).filter(key => key.startsWith('person'));
-            setPersons(newPersons); // Actualiza el estado de persons
+            const personsKeys = Object.keys(response).filter(key => key.startsWith('person'));
+            const newPersons = []
+            personsKeys.forEach(key => {
+                newPersons.push(response[key])
+            });
+            if (module == "height-estimation-face") newPersons.push({height: (response.height/10), centroid: [0,0,(response.depth/10)]});
+            console.log(newPersons);
+            setPersons(newPersons); 
+
         }
     }, [response]);
 
@@ -32,7 +39,7 @@ const HeightDisplay = () =>{
                                 Persona {index+1}
                             </div>
                             <div className={`col-span-2 row-start-${index + 2} border py-2`}>
-                                {response[person].height.toFixed(2)} cm
+                                {person.height ? person.height.toFixed(2) + " cm": person.message }
                             </div>
                         </div>
                     ))}
@@ -48,7 +55,7 @@ const HeightDisplay = () =>{
                                 Persona {index+1}
                             </div>
                             <div className={`col-span-2 row-start-${index + 2} border py-2`}>
-                                {response[person].centroid[2].toFixed(2)} cm
+                                {person.centroid[2].toFixed(2)} cm
                             </div>
                         </div>
                     ))}
