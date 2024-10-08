@@ -1,12 +1,14 @@
 ---
+import DatasetGeneration from '../components/DatasetGeneration';
 import ImageVisualization from '../components/ImageVisualization';
 import LiveSettings from '../components/LiveSettings';
 import Tabs from '../components/Tabs';
 import CloudVisualization from '../layouts/CloudVisualization';
 import Layout from '../layouts/Layout.astro';
 
-let settings = {
-    
+let settings = { 
+    fps: '30', 
+    resolution: '1920×1080' 
 }
 
 const handleContinue = () => {
@@ -17,7 +19,9 @@ const handleContinue = () => {
 
 <Layout title="Multimedia Capture">
     <div class="flex justify-center mb-4 my-10">
-        <LiveSettings onContinue={handleContinue} client:load/>
+        <!-- <LiveSettings onContinue={handleContinue} client:load/> -->
+
+        <DatasetGeneration settings={settings} client:load/>
     </div>
 
 </Layout>

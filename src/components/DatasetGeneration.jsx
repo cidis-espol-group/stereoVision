@@ -5,7 +5,7 @@ import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 import { useStore } from '@nanostores/react';
 import { scrollToSection } from '../shared/tabStore';
 
-const DatasetGeneration = ({ module, settings }) => {
+const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
   const leftVideoRef = useRef(null);
   const rightVideoRef = useRef(null);
@@ -151,7 +151,7 @@ const DatasetGeneration = ({ module, settings }) => {
     return leftFile, rightFile;
   };
 
-  const startRecording = () => {
+  const startRecording = async () => {
     if (
       leftVideoRef.current &&
       leftVideoRef.current.srcObject &&
@@ -160,17 +160,18 @@ const DatasetGeneration = ({ module, settings }) => {
     ) {
       // Configuración para el video izquierdo
       const leftStream = leftVideoRef.current.srcObject;
-      leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/mp4' });
+      leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/webm;codecs=vp8' });
       leftMediaRecorder.current.ondataavailable = (event) => {
+        console.log(event.data && event.data.size > 0)
         if (event.data && event.data.size > 0) {
-          setLeftVideoChunks((prevChunks) => [...prevChunks, event.data]);
+          setLeftVideoChunks((prevChunks) => [...prevChunks, event.data]);          
         }
       };
       leftMediaRecorder.current.start();
 
       // Configuración para el video derecho
       const rightStream = rightVideoRef.current.srcObject;
-      rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/mp4' });
+      rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/webm;codecs=vp8' });
       rightMediaRecorder.current.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           setRightVideoChunks((prevChunks) => [...prevChunks, event.data]);
@@ -189,7 +190,7 @@ const DatasetGeneration = ({ module, settings }) => {
     if (leftMediaRecorder.current && leftMediaRecorder.current.state !== 'inactive') {
       leftMediaRecorder.current.stop();
       leftMediaRecorder.current.onstop = () => {
-        const blob = new Blob(leftVideoChunks, { type: 'video/mp4' });
+        const blob = new Blob(leftVideoChunks, { type: 'video/webm;codecs=vp8' });
         const url = URL.createObjectURL(blob);
 
         // Descargar el video grabado
@@ -213,14 +214,16 @@ const DatasetGeneration = ({ module, settings }) => {
     if (rightMediaRecorder.current && rightMediaRecorder.current.state !== 'inactive') {
       rightMediaRecorder.current.stop();
       rightMediaRecorder.current.onstop = () => {
-        const blob = new Blob(rightVideoChunks, { type: 'video/mp4' });
+        const blob = new Blob(rightVideoChunks, { type: 'video/webm;codecs=vp8' });
+        console.log(blob);
+        
         const url = URL.createObjectURL(blob);
 
         // Descargar el video grabado
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = str_name('RIGHT', '.mp4');;
+        a.download = str_name('RIGHT', '.mkv');;
         document.body.appendChild(a);
         a.click();
 
@@ -364,6 +367,8 @@ const DatasetGeneration = ({ module, settings }) => {
           onClick={isRecording ? stopRecording : startRecording}
           disabled={loading}
         />
+
+        <span>{isRecording ? "Grabando" : "No se graba"}</span>
         <Button label={'Capturar'} onClick={captureImage} disabled={loading} />
       </div>
     </div>

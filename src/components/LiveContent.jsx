@@ -17,9 +17,6 @@ const LiveContent = ({ module, settings }) => {
 
   const leftMediaRecorder = useRef(null);
   const rightMediaRecorder = useRef(null);
-  const [leftVideoChunks, setLeftVideoChunks] = useState([]);
-  const [rightVideoChunks, setRightVideoChunks] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
@@ -182,90 +179,6 @@ const LiveContent = ({ module, settings }) => {
     }
   };
 
-  const startRecording = () => {
-    if (
-      leftVideoRef.current &&
-      leftVideoRef.current.srcObject &&
-      rightVideoRef.current &&
-      rightVideoRef.current.srcObject
-    ) {
-      // Configuración para el video izquierdo
-      const leftStream = leftVideoRef.current.srcObject;
-      leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/mp4' });
-      leftMediaRecorder.current.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          setLeftVideoChunks((prevChunks) => [...prevChunks, event.data]);
-        }
-      };
-      leftMediaRecorder.current.start();
-
-      // Configuración para el video derecho
-      const rightStream = rightVideoRef.current.srcObject;
-      rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/mp4' });
-      rightMediaRecorder.current.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          setRightVideoChunks((prevChunks) => [...prevChunks, event.data]);
-        }
-      };
-      rightMediaRecorder.current.start();
-
-      setIsRecording(true);
-    } else {
-      console.error('Los videos no están listos para grabar');
-    }
-  };
-
-  const stopRecording = () => {
-    // Detener el MediaRecorder izquierdo
-    if (leftMediaRecorder.current && leftMediaRecorder.current.state !== 'inactive') {
-      leftMediaRecorder.current.stop();
-      leftMediaRecorder.current.onstop = () => {
-        const blob = new Blob(leftVideoChunks, { type: 'video/mp4' });
-        const url = URL.createObjectURL(blob);
-
-        // Descargar el video grabado
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = str_name('LEFT', '.mp4');
-        document.body.appendChild(a);
-        a.click();
-
-        // Limpieza
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 100);
-        setLeftVideoChunks([]);
-      };
-    }
-
-    // Detener el MediaRecorder derecho
-    if (rightMediaRecorder.current && rightMediaRecorder.current.state !== 'inactive') {
-      rightMediaRecorder.current.stop();
-      rightMediaRecorder.current.onstop = () => {
-        const blob = new Blob(rightVideoChunks, { type: 'video/mp4' });
-        const url = URL.createObjectURL(blob);
-
-        // Descargar el video grabado
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = str_name('RIGHT', '.mp4');;
-        document.body.appendChild(a);
-        a.click();
-
-        // Limpieza
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 100);
-        setRightVideoChunks([]);
-      };
-    }
-
-    setIsRecording(false);
-  };
 
   const str_name = (name, extension) => {
     const currentDate = new Date();
@@ -390,11 +303,6 @@ const LiveContent = ({ module, settings }) => {
         </div>
       </div>
       <div className="flex justify-center mb-6">
-        <Button
-          label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={loading}
-        />
         <Button label={'Capturar'} onClick={captureImage} disabled={loading} />
       </div>
     </div>
