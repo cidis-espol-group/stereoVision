@@ -8,7 +8,7 @@ export const loadingStore = atom(false)
 export const showVisualStore = atom(false)
 export const isRoiStore = atom(true)
 
-const base = 'http://192.168.0.102:8081/';
+const base = 'http://127.0.0.1:8000/';
 
 
 const getURL = (module, parameters) => {
