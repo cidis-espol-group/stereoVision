@@ -182,7 +182,7 @@ const GridCube = ({ limits }) => {
       {/* <Text ref={zRightLabel} position={[-max_x / 2 - separation, -max_y / 2, max_z / 2]} fontSize={fontSize} color="blue">
         Z
       </Text>  */}
-      <AxesHelper max_x={max_x} max_y={max_y} max_z={max_z} separation={separation}/>
+      {/* <AxesHelper max_x={max_x} max_y={max_y} max_z={max_z} separation={separation}/> */}
     </group>
   );
 };

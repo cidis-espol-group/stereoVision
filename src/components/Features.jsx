@@ -5,17 +5,10 @@ import { OrbitControls, Line, Text } from '@react-three/drei';
 import { visualizationConfigStore } from '../shared/imagesStore';
 import { useStore } from '@nanostores/react';
 import GridCube from './utils/GridCube';
+import { get_color } from "../shared/utils";
 // import { data, visualizationConfig } from "../shared/json";
 
-function generateRandomColor() {
-  const randomColor = new THREE.Color(Math.random(), Math.random(), Math.random());
-  return `#${randomColor.getHexString()}`;
-}
 
-function get_color(index) {
-  const colors = ['#FC7A1E', '#B0E298', '#E072A4', '#82A6B1', '#353831', '#2AB7CA', ]
-  return colors[index]
-}
 
 function renderPoints(points, color, size=2) {
   return points.map((point, index) => (

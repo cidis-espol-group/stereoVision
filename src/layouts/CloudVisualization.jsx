@@ -15,6 +15,8 @@ import { visualizationConfigStore } from "../shared/imagesStore";
 import ToggleButton from "../components/utils/ToggleButton";
 import FeaturesToggles from "../components/FeaturesToggles";
 
+import { get_color } from "../shared/utils";
+
 const CloudVisualization = ({ title, module }) => {
     const response = useStore(responseStore)
     const showVisualization =useStore(showVisualStore)
@@ -33,6 +35,8 @@ const CloudVisualization = ({ title, module }) => {
         
         
     }, [target]);
+
+    
 
     
     return(
@@ -82,6 +86,25 @@ const CloudVisualization = ({ title, module }) => {
                                 <p className="m-3 w-full sm:w-1/2 lg:w-1/3"><span className="font-semibold">People Count:</span> {response.features.count}</p>
                                 <p className="m-3 w-full sm:w-1/2 lg:w-1/3"><span className="font-semibold">Group Form:</span> {response.features.character}</p>
                             </div>
+
+                            <>
+                                <div className="flex items-center align-middle">
+                                    <div className="flex-grow border-t border-gray-400"></div>
+                                    <h2 className="mx-4 font-bold text-2xl text-center my-3">People height</h2>
+                                    <div className="flex-grow border-t border-gray-400"></div>
+                                </div>
+
+                                 
+                                <div className="flex flex-wrap">
+                                    {Object.entries(response.features.persons).map(([key, person])=> (
+                                        <div key={key} className="flex items-center justify-center">
+                                            <div className={`size-5 rounded-full mr-1`} style={{backgroundColor:get_color(key)}}></div>
+                                            <span className="mr-5">Person {parseInt(key)+1}: {(person.height/100).toFixed(2)} m</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+
                             
                             <FeaturesToggles/>
                         </div>

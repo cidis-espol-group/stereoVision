@@ -2,7 +2,7 @@ import React, { useRef, forwardRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 
 
-const AxesHelper = ({max_x, max_y, max_z, separation, }) => {
+const AxesHelper = ({max_x, max_y, max_z, separation, fontSize}) => {
     // Refs para las etiquetas
   const xRightLabel = useRef();
   const yRightLabel = useRef();

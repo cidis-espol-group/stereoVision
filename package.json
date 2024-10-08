@@ -13,6 +13,8 @@
     "@astrojs/check": "^0.9.1",
     "@astrojs/react": "^3.6.1",
     "@astrojs/tailwind": "^5.1.0",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
     "@nanostores/react": "^0.7.3",
     "@react-three/drei": "^9.109.2",
     "@react-three/fiber": "^8.16.8",

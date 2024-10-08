@@ -2,13 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { isRoiStore, loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
-import Dropdown from './utils/Dropdown';
-import Checkbox from './utils/Checkbox';
-import ToggleButton from './utils/ToggleButton';
 import { useStore } from '@nanostores/react';
 import { scrollToSection } from '../shared/tabStore';
 
-const LiveContent = ({ module, settings }) => {
+const DatasetGeneration = ({ module, settings }) => {
   const videoRef = useRef(null);
   const leftVideoRef = useRef(null);
   const rightVideoRef = useRef(null);
@@ -23,14 +20,6 @@ const LiveContent = ({ module, settings }) => {
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
-
-  const [method, setMethod] = useState(null);
-  const [parameters, setParameters] = useState({
-    useRoi: true,
-    useMaxDisp: true,
-    normalize: true,
-    saveImgs: false
-  });
 
   const loading = useStore(loadingStore);
 
@@ -154,32 +143,12 @@ const LiveContent = ({ module, settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-    const { profile } = settings;
-
-    if (!method && module != 'height-estimation-face') {
-      alert('Por favor, selecciona un método de generación.');
-      return;
-    }
-
-    loadingStore.set(true);
-    showVisualStore.set(true);
-    isRoiStore.set(parameters.useRoi);
-
-    let formData = new FormData();
-    formData.append('img_left', leftFile);
-    formData.append('img_right', rightFile);
-    formData.append('profile_name', profile);
-    if (module != 'height-estimation-face') formData.append('method', method);
-
-    sendPostRequest(formData, module, parameters);
-    setTimeout(() => {
-      scrollToSection.set('visualization');
-    }, 100);
-
     if (parameters.saveImgs) {
       downloadImage(leftImage, 'LEFT', '.png');
       downloadImage(rightImage, 'RIGHT', '.png');
     }
+
+    return leftFile, rightFile;
   };
 
   const startRecording = () => {
@@ -317,7 +286,7 @@ const LiveContent = ({ module, settings }) => {
   return (
     <div className={'pt-8 px-8'}>
       <video ref={videoRef} autoPlay style={{ display: 'none' }}></video>
-      <div
+      {/* <div
         className={`flex ${
           module === 'height-estimation-face' ? 'justify-end' : 'justify-between'
         } content-center mb-8`}
@@ -363,7 +332,7 @@ const LiveContent = ({ module, settings }) => {
             />
           </>
         )}
-      </div>
+      </div> */}
 
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
@@ -401,4 +370,4 @@ const LiveContent = ({ module, settings }) => {
   );
 };
 
-export default LiveContent;
+export default DatasetGeneration;
