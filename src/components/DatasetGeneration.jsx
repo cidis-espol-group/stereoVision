@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { isRoiStore, loadingStore, sendPostRequest, showVisualStore } from "../shared/apiService";
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
-import { useStore } from '@nanostores/react';
-import { scrollToSection } from '../shared/tabStore';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -14,14 +11,14 @@ const DatasetGeneration = ({ settings }) => {
 
   const leftMediaRecorder = useRef(null);
   const rightMediaRecorder = useRef(null);
-  const [leftVideoChunks, setLeftVideoChunks] = useState([]);
-  const [rightVideoChunks, setRightVideoChunks] = useState([]);
+  const leftVideoChunks = useRef([]);
+  const rightVideoChunks = useRef([]);
   const [isRecording, setIsRecording] = useState(false);
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
 
-  const loading = useStore(loadingStore);
+  const saveImgs = true;
 
   const initializeStream = (videoElement, canvas, outputVideo, isLeft) => {
     if (!canvas || !outputVideo) return;
@@ -143,9 +140,9 @@ const DatasetGeneration = ({ settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-    if (parameters.saveImgs) {
-      downloadImage(leftImage, 'LEFT', '.png');
-      downloadImage(rightImage, 'RIGHT', '.png');
+    if (saveImgs) {
+      downloadFile(leftImage, 'LEFT', '.png');
+      downloadFile(rightImage, 'RIGHT', '.png');
     }
 
     return leftFile, rightFile;
@@ -162,9 +159,8 @@ const DatasetGeneration = ({ settings }) => {
       const leftStream = leftVideoRef.current.srcObject;
       leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/webm;codecs=vp8' });
       leftMediaRecorder.current.ondataavailable = (event) => {
-        console.log(event.data && event.data.size > 0)
         if (event.data && event.data.size > 0) {
-          setLeftVideoChunks((prevChunks) => [...prevChunks, event.data]);          
+          leftVideoChunks.current.push(event.data);
         }
       };
       leftMediaRecorder.current.start();
@@ -174,7 +170,7 @@ const DatasetGeneration = ({ settings }) => {
       rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/webm;codecs=vp8' });
       rightMediaRecorder.current.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
-          setRightVideoChunks((prevChunks) => [...prevChunks, event.data]);
+          rightVideoChunks.current.push(event.data);
         }
       };
       rightMediaRecorder.current.start();
@@ -188,52 +184,43 @@ const DatasetGeneration = ({ settings }) => {
   const stopRecording = () => {
     // Detener el MediaRecorder izquierdo
     if (leftMediaRecorder.current && leftMediaRecorder.current.state !== 'inactive') {
-      leftMediaRecorder.current.stop();
+      
       leftMediaRecorder.current.onstop = () => {
-        const blob = new Blob(leftVideoChunks, { type: 'video/webm;codecs=vp8' });
+        const blob = new Blob(leftVideoChunks.current, { 
+          type: 'video/webm;codecs=vp8',
+          videoBitsPerSecond: 5_000_000
+        });
+      
         const url = URL.createObjectURL(blob);
-
-        // Descargar el video grabado
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = str_name('LEFT', '.mp4');
-        document.body.appendChild(a);
-        a.click();
-
+        downloadFile(url, "LEFT", ".webm")
+      
         // Limpieza
         setTimeout(() => {
           document.body.removeChild(a);
           window.URL.revokeObjectURL(url);
         }, 100);
-        setLeftVideoChunks([]);
+        leftVideoChunks.current = []; // Clear chunks
       };
-    }
 
-    // Detener el MediaRecorder derecho
-    if (rightMediaRecorder.current && rightMediaRecorder.current.state !== 'inactive') {
-      rightMediaRecorder.current.stop();
+      leftMediaRecorder.current.stop();
+
+      // Detener el MediaRecorder derecho
       rightMediaRecorder.current.onstop = () => {
-        const blob = new Blob(rightVideoChunks, { type: 'video/webm;codecs=vp8' });
-        console.log(blob);
-        
+        const blob = new Blob(rightVideoChunks.current, { 
+          type: 'video/webm;codecs=vp8',
+          videoBitsPerSecond: 5_000_000
+        });
+      
         const url = URL.createObjectURL(blob);
 
-        // Descargar el video grabado
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = str_name('RIGHT', '.mkv');;
-        document.body.appendChild(a);
-        a.click();
-
+        downloadFile(url, "RIGHT", ".webm")
+      
         // Limpieza
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 100);
-        setRightVideoChunks([]);
+        
+        rightVideoChunks.current = []; // Clear chunks
       };
+
+      rightMediaRecorder.current.stop();
     }
 
     setIsRecording(false);
@@ -257,15 +244,17 @@ const DatasetGeneration = ({ settings }) => {
     return dateString + '_' + hourString + '_' + name + extension
   }
 
-  const downloadImage = (url, name, extension) => {
-    const filename = str_name(name, extension)
+  const downloadFile = (url, name, extension) => {
+    const filename = str_name(name, extension);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
+    setTimeout(() => {    
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    }, 100);
   };
 
   const dataURLToBlob = (dataURL) => {
@@ -279,64 +268,9 @@ const DatasetGeneration = ({ settings }) => {
     return new Blob([ab], { type: mimeString });
   };
 
-  const handleCheckboxChange = (name, isChecked) => {
-    setParameters((prevState) => ({
-      ...prevState,
-      [name]: isChecked
-    }));
-  };
-
   return (
     <div className={'pt-8 px-8'}>
       <video ref={videoRef} autoPlay style={{ display: 'none' }}></video>
-      {/* <div
-        className={`flex ${
-          module === 'height-estimation-face' ? 'justify-end' : 'justify-between'
-        } content-center mb-8`}
-      >
-        {module === 'height-estimation-face' ? (
-          <>
-            <Checkbox
-              className={``}
-              label="Save Images"
-              checked={parameters.saveImgs}
-              onChange={(isChecked) => handleCheckboxChange('saveImgs', isChecked)}
-            />
-          </>
-        ) : (
-          <>
-            <Dropdown
-              label="Method"
-              options={['SGBM', 'WLS-SGBM', 'RAFT', 'SELECTIVE']}
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
-            />
-            <Checkbox
-              label="Use max disparity"
-              checked={parameters.useMaxDisp}
-              onChange={(isChecked) => handleCheckboxChange('useMaxDisp', isChecked)}
-            />
-            <Checkbox
-              label="Normalize"
-              checked={parameters.normalize}
-              onChange={(isChecked) => handleCheckboxChange('normalize', isChecked)}
-            />
-            <Checkbox
-              label="Save Images"
-              checked={parameters.saveImgs}
-              onChange={(isChecked) => handleCheckboxChange('saveImgs', isChecked)}
-            />
-            <ToggleButton
-              leftLabel={'Keypoints'}
-              rightLabel={'ROI'}
-              checked={parameters.useRoi}
-              onChange={(isChecked) => handleCheckboxChange('useRoi', isChecked)}
-              className={module !== 'no-dense-point-cloud' ? 'hidden' : ''}
-            />
-          </>
-        )}
-      </div> */}
-
       <div className="flex justify-center mb-6">
         <div className="w-1/2 text-center">
           <p className="mb-2 font-bold">LEFT</p>
@@ -365,11 +299,10 @@ const DatasetGeneration = ({ settings }) => {
         <Button
           label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
           onClick={isRecording ? stopRecording : startRecording}
-          disabled={loading}
         />
 
         <span>{isRecording ? "Grabando" : "No se graba"}</span>
-        <Button label={'Capturar'} onClick={captureImage} disabled={loading} />
+        <Button label={'Capturar'} onClick={captureImage} />
       </div>
     </div>
   );
