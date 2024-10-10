@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
+import { send_video_images } from '../shared/apiService';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -14,6 +15,8 @@ const DatasetGeneration = ({ settings }) => {
   const leftVideoChunks = useRef([]);
   const rightVideoChunks = useRef([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
+  const [finalFrame, setFinalFrame] = useState(null)
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
@@ -140,12 +143,12 @@ const DatasetGeneration = ({ settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-    if (saveImgs) {
-      downloadFile(leftImage, 'LEFT', '.png');
-      downloadFile(rightImage, 'RIGHT', '.png');
-    }
+    // if (saveImgs) {
+    //   downloadFile(leftImage, 'LEFT', '.png');
+    //   downloadFile(rightImage, 'RIGHT', '.png');
+    // }
 
-    return leftFile, rightFile;
+    return [leftFile, rightFile];
   };
 
   const startRecording = async () => {
@@ -157,7 +160,7 @@ const DatasetGeneration = ({ settings }) => {
     ) {
       // Configuración para el video izquierdo
       const leftStream = leftVideoRef.current.srcObject;
-      leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/webm;codecs=vp8' });
+      leftMediaRecorder.current = new MediaRecorder(leftStream, { mimeType: 'video/webm;codecs=vp9' });
       leftMediaRecorder.current.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           leftVideoChunks.current.push(event.data);
@@ -167,7 +170,7 @@ const DatasetGeneration = ({ settings }) => {
 
       // Configuración para el video derecho
       const rightStream = rightVideoRef.current.srcObject;
-      rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/webm;codecs=vp8' });
+      rightMediaRecorder.current = new MediaRecorder(rightStream, { mimeType: 'video/webm;codecs=vp9' });
       rightMediaRecorder.current.ondataavailable = (event) => {
         if (event.data && event.data.size > 0) {
           rightVideoChunks.current.push(event.data);
@@ -187,7 +190,7 @@ const DatasetGeneration = ({ settings }) => {
       
       leftMediaRecorder.current.onstop = () => {
         const blob = new Blob(leftVideoChunks.current, { 
-          type: 'video/webm;codecs=vp8',
+          type: 'video/webm;codecs=vp9',
           videoBitsPerSecond: 5_000_000
         });
       
@@ -207,7 +210,7 @@ const DatasetGeneration = ({ settings }) => {
       // Detener el MediaRecorder derecho
       rightMediaRecorder.current.onstop = () => {
         const blob = new Blob(rightVideoChunks.current, { 
-          type: 'video/webm;codecs=vp8',
+          type: 'video/webm;codecs=vp9',
           videoBitsPerSecond: 5_000_000
         });
       
@@ -226,6 +229,30 @@ const DatasetGeneration = ({ settings }) => {
     setIsRecording(false);
   };
 
+  const send_images = () => {
+    console.log("send_images",isRecording);
+    const [leftImage, rightImage] = captureImage();
+    
+    const leftFormData = new FormData();
+    leftFormData.append("file", leftImage, str_name("LEFT", ".png"))
+    send_video_images(leftFormData)
+
+    const rightFormData = new FormData();
+    rightFormData.append("file", rightImage, str_name("RIGHT", ".png"))
+    send_video_images(rightFormData)
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      setIsRecording(false);
+      clearInterval(intervalId);
+    } else {
+      setIsRecording(true)
+      const id = setInterval(send_images, (1000/30));
+      setIntervalId(id);
+    }
+  }
+
   const str_name = (name, extension) => {
     const currentDate = new Date();
     const dateString =
@@ -236,9 +263,9 @@ const DatasetGeneration = ({ settings }) => {
       currentDate.getFullYear();
     const hourString =
       currentDate.getHours() +
-      ':' +
+      '_' +
       currentDate.getMinutes() +
-      ':' +
+      '_' +
       currentDate.getSeconds();
 
     return dateString + '_' + hourString + '_' + name + extension
@@ -298,7 +325,8 @@ const DatasetGeneration = ({ settings }) => {
       <div className="flex justify-center mb-6">
         <Button
           label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
-          onClick={isRecording ? stopRecording : startRecording}
+          // onClick={isRecording ? stopRecording : startRecording}}
+          onClick={toggleRecording}
         />
 
         <span>{isRecording ? "Grabando" : "No se graba"}</span>

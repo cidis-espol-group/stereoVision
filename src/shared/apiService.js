@@ -210,3 +210,65 @@ export const getProfile = async (profile) => {
     showVisualStore.set(false)
   } 
 }
+
+export const send_video_images =  async (data) => {
+  const url = base + "upload-frame/";
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    console.log(jsonResponse);
+    
+    // responseStore.set(jsonResponse);
+    // showContentStore.set(true); 
+    // loadingStore.set(false)
+    
+  } catch (error) {
+    console.error('Error in fetch:', error);
+    // loadingStore.set(false);
+    // showVisualStore.set(false)
+  }  
+};
+
+export const process_video =  async (data) => {
+  const url = base + "upload-frame/";
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    console.log(jsonResponse);
+    
+    // responseStore.set(jsonResponse);
+    // showContentStore.set(true); 
+    // loadingStore.set(false)
+    
+  } catch (error) {
+    console.error('Error in fetch:', error);
+    // loadingStore.set(false);
+    // showVisualStore.set(false)
+  }  
+};
