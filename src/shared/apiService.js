@@ -242,8 +242,8 @@ export const send_video_images =  async (data) => {
   }  
 };
 
-export const process_video =  async (data) => {
-  const url = base + "upload-frame/";
+export const process_video_from_images =  async (data) => {
+  const url = base + "process-video/";
 
   try {
     const response = await fetch(url, {
@@ -262,13 +262,44 @@ export const process_video =  async (data) => {
     const jsonResponse = await response.json();
     console.log(jsonResponse);
     
-    // responseStore.set(jsonResponse);
+    responseStore.set(jsonResponse);
     // showContentStore.set(true); 
-    // loadingStore.set(false)
+    loadingStore.set(false)
     
   } catch (error) {
     console.error('Error in fetch:', error);
-    // loadingStore.set(false);
-    // showVisualStore.set(false)
+    loadingStore.set(false);
+    showVisualStore.set(false)
+  }  
+};
+
+export const convert_video_formart =  async (data) => {
+  const url = base + "convert-video/";
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response)
+    } 
+
+    const jsonResponse = await response.json();
+    console.log(jsonResponse);
+    
+    responseStore.set(jsonResponse);
+    // showContentStore.set(true); 
+    loadingStore.set(false)
+    
+  } catch (error) {
+    console.error('Error in fetch:', error);
+    loadingStore.set(false);
+    showVisualStore.set(false)
   }  
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
-import { send_video_images } from '../shared/apiService';
+import { process_video_from_images, send_video_images } from '../shared/apiService';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -229,7 +229,7 @@ const DatasetGeneration = ({ settings }) => {
     setIsRecording(false);
   };
 
-  const send_images = () => {
+  const send_images = async () => {
     console.log("send_images",isRecording);
     const [leftImage, rightImage] = captureImage();
     
@@ -242,10 +242,22 @@ const DatasetGeneration = ({ settings }) => {
     send_video_images(rightFormData)
   };
 
+  const process_video = () => {
+    const leftFormData = new FormData();
+    leftFormData.append('output_filename', str_name('LEFT', ".avi"));
+    leftFormData.append('search_pattern', "LEFT");
+    leftFormData.append('fps', Number(settings.fps))
+
+    process_video_from_images(leftFormData)
+    console.log("entra aqui");
+    
+  }
+
   const toggleRecording = () => {
     if (isRecording) {
       setIsRecording(false);
       clearInterval(intervalId);
+      process_video()
     } else {
       setIsRecording(true)
       const id = setInterval(send_images, (1000/30));
@@ -325,8 +337,8 @@ const DatasetGeneration = ({ settings }) => {
       <div className="flex justify-center mb-6">
         <Button
           label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
-          // onClick={isRecording ? stopRecording : startRecording}}
-          onClick={toggleRecording}
+          onClick={isRecording ? stopRecording : startRecording}
+          // onClick={toggleRecording}
         />
 
         <span>{isRecording ? "Grabando" : "No se graba"}</span>
