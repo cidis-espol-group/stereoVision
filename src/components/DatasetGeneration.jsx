@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
-import { process_video_from_images, send_video_images } from '../shared/apiService';
+import { convert_video_formart, process_video_from_images, send_video_images } from '../shared/apiService';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -143,10 +143,10 @@ const DatasetGeneration = ({ settings }) => {
     const leftFile = new File([leftBlob], 'left_image.png', { type: 'image/png' });
     const rightFile = new File([rightBlob], 'right_image.png', { type: 'image/png' });
 
-    // if (saveImgs) {
-    //   downloadFile(leftImage, 'LEFT', '.png');
-    //   downloadFile(rightImage, 'RIGHT', '.png');
-    // }
+    if (saveImgs) {
+      downloadFile(leftImage, 'LEFT', '.png');
+      downloadFile(rightImage, 'RIGHT', '.png');
+    }
 
     return [leftFile, rightFile];
   };
@@ -195,13 +195,16 @@ const DatasetGeneration = ({ settings }) => {
         });
       
         const url = URL.createObjectURL(blob);
-        downloadFile(url, "LEFT", ".webm")
+        // downloadFile(url, "LEFT", ".webm")
+    
+        const leftFile = new File([blob], 'left_image.png', { type: 'video/webm;codecs=vp9' });
+
+        const formdata = new FormData()
+        formdata.append("file", leftFile, str_name("LEFT", ".webm"))
+
+        convert_video_formart(formdata)
       
-        // Limpieza
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 100);
+        
         leftVideoChunks.current = []; // Clear chunks
       };
 
@@ -217,8 +220,6 @@ const DatasetGeneration = ({ settings }) => {
         const url = URL.createObjectURL(blob);
 
         downloadFile(url, "RIGHT", ".webm")
-      
-        // Limpieza
         
         rightVideoChunks.current = []; // Clear chunks
       };

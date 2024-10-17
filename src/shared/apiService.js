@@ -8,7 +8,7 @@ export const loadingStore = atom(false)
 export const showVisualStore = atom(false)
 export const isRoiStore = atom(true)
 
-const base = 'http://127.0.0.1:8000/';
+const base = 'http://http://192.168.1.8:8000/';
 
 
 const getURL = (module, parameters) => {
@@ -273,33 +273,84 @@ export const process_video_from_images =  async (data) => {
   }  
 };
 
-export const convert_video_formart =  async (data) => {
-  const url = base + "convert-video/";
+// export const convert_video_formart =  async (data) => {
+//   const url = base + "convert-video/";
 
-  try {
-    const response = await fetch(url, {
+//   try {
+//     const response = await fetch(url, {
+//       method: 'POST',
+//       body: data,
+//       headers: {
+//         'Authorization': `Bearer ${apiKey}`,
+//         'ngrok-skip-browser-warning': 'any'
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throwError(response)
+//     } 
+
+//     const jsonResponse = await response.json();
+//     console.log(jsonResponse);
+    
+//     responseStore.set(jsonResponse);
+//     // showContentStore.set(true); 
+//     loadingStore.set(false)
+    
+//   } catch (error) {
+//     console.error('Error in fetch:', error);
+//     loadingStore.set(false);
+//     showVisualStore.set(false)
+//   }  
+// };
+
+export const convert_video_formart = async (data) => {
+  const url = base + "convert-video/";
+  
+    fetch(url, {
       method: 'POST',
       body: data,
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'ngrok-skip-browser-warning': 'any'
+        'Content-Type': 'application/json',
       },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      
+      // Guarda el response en una variable para poder usarlo después
+      const contentDisposition = response.headers.get('Content-Disposition');
+  
+      return response.blob().then(blob => {
+        return { blob, contentDisposition }; // Retorna un objeto con el blob y el encabezado
+      });
+    })
+    .then(({ blob, contentDisposition }) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+  
+      // Nombre por defecto si no se proporciona en el encabezado
+      let filename = 'video.avi';
+
+      if (!isRoiStore.get()) {
+        filename = `pointCloud`;
+      }
+  
+      // Extraer el nombre del archivo del encabezado 'Content-Disposition' si está disponible
+      if (contentDisposition) {
+        const matches = /filename="(.+)"/.exec(contentDisposition);
+        if (matches != null && matches[1]) filename = matches[1];
+      }
+  
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+      console.error('There was an error downloading the file:', error);
     });
-
-    if (!response.ok) {
-      throwError(response)
-    } 
-
-    const jsonResponse = await response.json();
-    console.log(jsonResponse);
-    
-    responseStore.set(jsonResponse);
-    // showContentStore.set(true); 
-    loadingStore.set(false)
-    
-  } catch (error) {
-    console.error('Error in fetch:', error);
-    loadingStore.set(false);
-    showVisualStore.set(false)
-  }  
 };
