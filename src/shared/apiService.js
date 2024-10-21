@@ -1,6 +1,6 @@
 // shared/api.js
 import { atom } from "nanostores";
-import { downloadResponseStore, responseStore } from "./response";
+import { downloadResponseStore, profilesStore, responseStore } from "./response";
 import { showContentStore } from "./tabStore";
 
 const apiKey = import.meta.env.API_KEY;
@@ -8,8 +8,11 @@ export const loadingStore = atom(false)
 export const showVisualStore = atom(false)
 export const isRoiStore = atom(true)
 
-const base = 'http://http://192.168.1.8:8000/';
+// // Exposed host
+// const base = 'http://192.168.1.8:8000/';
 
+// Localhost
+const base = 'http://127.0.0.1:8000/';
 
 const getURL = (module, parameters) => {
     let generatedUrl = '';
@@ -23,7 +26,6 @@ const getURL = (module, parameters) => {
       case 'height-estimation-face':
         // generatedUrl =`${base}face/height_estimation/`;
         generatedUrl =`${base}face/height_estimation/`;
-
         break;
       case 'no-dense-point-cloud':
         generatedUrl = `${base}generate_point_cloud/nodense/individual/?use_roi=${parameters.useRoi}&use_max_disparity=${parameters.useMaxDisp}&normalize=${parameters.normalize}`;
@@ -160,6 +162,8 @@ export const downloadFile = async (module, extension) => {
       console.error('There was an error downloading the file:', error);
     });
 };
+
+
 export const getProfiles = async () => {
   const url = `${base}get_profiles/`
   try {
@@ -176,6 +180,7 @@ export const getProfiles = async () => {
     } 
 
     const jsonResponse = await response.json();
+    // profilesStore.set(jsonResponse)
     return jsonResponse
     
   } catch (error) {
@@ -304,45 +309,24 @@ export const process_video_from_images =  async (data) => {
 //   }  
 // };
 
-export const convert_video_formart = async (data) => {
-  const url = base + "convert-video/";
+export const convert_video_formart = async (data, filename = "video.avi") => {
+  const url = base + "convert_video/";
   
     fetch(url, {
       method: 'POST',
       body: data,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     })
-    .then(response => {
+    .then(async response => {
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
       }
-      
-      // Guarda el response en una variable para poder usarlo después
-      const contentDisposition = response.headers.get('Content-Disposition');
-  
-      return response.blob().then(blob => {
-        return { blob, contentDisposition }; // Retorna un objeto con el blob y el encabezado
-      });
+      const blob = await response.blob();
+      return { blob };
     })
-    .then(({ blob, contentDisposition }) => {
+    .then(({ blob }) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-  
-      // Nombre por defecto si no se proporciona en el encabezado
-      let filename = 'video.avi';
-
-      if (!isRoiStore.get()) {
-        filename = `pointCloud`;
-      }
-  
-      // Extraer el nombre del archivo del encabezado 'Content-Disposition' si está disponible
-      if (contentDisposition) {
-        const matches = /filename="(.+)"/.exec(contentDisposition);
-        if (matches != null && matches[1]) filename = matches[1];
-      }
   
       a.download = filename;
       document.body.appendChild(a);
@@ -353,4 +337,74 @@ export const convert_video_formart = async (data) => {
     .catch(error => {
       console.error('There was an error downloading the file:', error);
     });
+};
+
+export const fetchProfiles = async () => {
+  const url = base + 'get_profiles/';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any'
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response);
+    }
+
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (error) {
+    console.error('Error in fetchProfiles:', error);
+    throw error;
+  }
+};
+
+// Función para eliminar un perfil
+export const deleteProfile = async (profileName) => {
+  const url = `${base}delete_profile/${profileName}`;
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any',
+      },
+    });
+
+    if (!response.ok) {
+      throwError(response);
+    }
+
+    return response.ok;
+  } catch (error) {
+    console.error('Error in deleteProfile:', error);
+    throw error;
+  }
+};
+
+export const addProfile = async (data) => {
+  const url = base + 'add_profile/';
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'ngrok-skip-browser-warning': 'any',
+      },
+    });    
+
+    if (!response.ok) {
+      throwError(response);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in addProfile:', error);
+    throw error;
+  }
 };

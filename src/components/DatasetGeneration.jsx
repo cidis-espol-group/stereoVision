@@ -197,12 +197,11 @@ const DatasetGeneration = ({ settings }) => {
         const url = URL.createObjectURL(blob);
         // downloadFile(url, "LEFT", ".webm")
     
-        const leftFile = new File([blob], 'left_image.png', { type: 'video/webm;codecs=vp9' });
+        const leftFile = new File([blob], str_name("LEFT", ".webm"), { type: 'video/webm;codecs=vp9' });
 
         const formdata = new FormData()
-        formdata.append("file", leftFile, str_name("LEFT", ".webm"))
-
-        convert_video_formart(formdata)
+        formdata.append("file", leftFile)
+        convert_video_formart(formdata, str_name("LEFT", ".avi"))
       
         
         leftVideoChunks.current = []; // Clear chunks
@@ -219,7 +218,13 @@ const DatasetGeneration = ({ settings }) => {
       
         const url = URL.createObjectURL(blob);
 
-        downloadFile(url, "RIGHT", ".webm")
+        // downloadFile(url, "RIGHT", ".webm")
+
+        const leftFile = new File([blob], str_name("RIGHT", ".webm"), { type: 'video/webm;codecs=vp9' });
+
+        const formdata = new FormData()
+        formdata.append("file", leftFile)
+        convert_video_formart(formdata, str_name("RIGHT", ".avi"))
         
         rightVideoChunks.current = []; // Clear chunks
       };
@@ -339,7 +344,6 @@ const DatasetGeneration = ({ settings }) => {
         <Button
           label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
           onClick={isRecording ? stopRecording : startRecording}
-          // onClick={toggleRecording}
         />
 
         <span>{isRecording ? "Grabando" : "No se graba"}</span>

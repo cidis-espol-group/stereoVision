@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Button from './Button';
+import { addProfile, deleteProfile, fetchProfiles, getProfiles } from '../../shared/apiService';
+import { profilesStore } from '../../shared/response';
+import { useStore } from '@nanostores/react';
 
 
 const SettingsButton = () => {
@@ -11,17 +14,13 @@ const SettingsButton = () => {
   const [profiles, setProfiles] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState({});
 
+  const profilesResponse = useStore(profilesStore)
+
   const apiKey = import.meta.env.API_KEY;
 
   //TODO: Cambiar función de fetch a shared/api
   useEffect(() => {
-    fetch('http://http://192.168.1.8:8000/get_profiles/',{
-      headers: {
-        'Authorization':`Bearer ${apiKey}`,
-        'ngrok-skip-browser-warning': 'any'
-      }
-    })
-      .then(response => response.json())
+    fetchProfiles()
       .then(data => {
         setProfiles(data);
         const initialFiles = data.reduce((acc, profile) => {  
@@ -31,6 +30,7 @@ const SettingsButton = () => {
         setSelectedFiles(initialFiles);
       })
       .catch(error => console.error('Error fetching profiles:', error));
+    
   }, []);
 
   const togglePopup = () => {
@@ -57,14 +57,8 @@ const SettingsButton = () => {
 
   const handleDeleteProfile = async (profileName) => {
     try {
-      const response = await fetch(`http://http://192.168.1.8:8000/delete_profile/${profileName}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'ngrok-skip-browser-warning': 'any',
-        },
-      });
-      if (response.ok) {
+      const success = await deleteProfile(profileName);
+      if (success) {
         setProfiles(profiles.filter(profile => profile.name !== profileName));
       } else {
         console.error('Error deleting profile');
@@ -83,43 +77,22 @@ const SettingsButton = () => {
       const formData = new FormData();
       formData.append('file', newProfileFile);
       formData.append('profile_name', newProfileName);
-  
+
       try {
-        const response = await fetch('http://http://192.168.1.8:8000/add_profile/', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'ngrok-skip-browser-warning': 'any',
-          },
-          body: formData,
-        });
-  
-        if (response.ok) {
-          // Volvemos a hacer un fetch para obtener la lista actualizada de perfiles
-          const updatedProfilesResponse = await fetch('http://http://192.168.1.8:8000/get_profiles/', {
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'ngrok-skip-browser-warning': 'any',
-            },
-          });
-          const updatedProfiles = await updatedProfilesResponse.json();
-          setProfiles(updatedProfiles);
-  
-          // Actualiza también el estado de selectedFiles
-          const updatedSelectedFiles = updatedProfiles.reduce((acc, profile) => {
-            acc[profile.name] = profile.path;
-            return acc;
-          }, {});
-          setSelectedFiles(updatedSelectedFiles);
-          
-          // Reinicia los estados del formulario
-          setNewProfileName('');
-          setNewProfileFile(null);
-          setShowAddForm(false);
-          setShowDeleteButtons(false);
-        } else {
-          console.error('Error adding profile');
-        }
+        await addProfile(formData);
+        // Actualiza la lista de perfiles después de agregar
+        const updatedProfiles = await fetchProfiles();
+        setProfiles(updatedProfiles);
+        const updatedSelectedFiles = updatedProfiles.reduce((acc, profile) => {
+          acc[profile.name] = profile.path;
+          return acc; 
+        }, {});
+        setSelectedFiles(updatedSelectedFiles);
+        // Resetear el formulario
+        setNewProfileName('');
+        setNewProfileFile(null);
+        setShowAddForm(false);
+        setShowDeleteButtons(false);
       } catch (error) {
         console.error('Error adding profile:', error);
       }
@@ -252,55 +225,51 @@ const SettingsButton = () => {
               </div>
             )}
 
-{showAddForm && (
-  <div className="mt-4">
-    <div className="flex items-center mb-2 mr-5">
-    <input
-        type="text"
-        placeholder="Name"
-        className="border rounded px-2 py-1 mr-2 w-[4rem] flex-shrink-0"
-        value={newProfileName}
-        onChange={(e) => setNewProfileName(e.target.value)}
-      />
-      <input
-        type="file"
-        accept="application/json"
-        className="hidden"
-        id="file-upload"
-        onChange={(e) => setNewProfileFile(e.target.files[0])}
-      />
-      <label
-        htmlFor="file-upload"
-        className="flex-grow border rounded mr-3 px-2 py-1 bg-gray-100 text-gray-500 flex items-center cursor-pointer"
-      >
-        <span className="flex-grow font-normal">{newProfileFile ? newProfileFile.name : "File path"}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="icon icon-tabler icons-tabler-outline icon-tabler-folder"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
-        </svg>
-      </label>
-    </div>
-    <div className="flex justify-center mt-4">
-      
-      <Button label={'Add Profile'} onClick={handleAddProfile}/>
-    </div>
-  </div>
-)}
-
-
-
-
+            {showAddForm && (
+              <div className="mt-4">
+                <div className="flex items-center mb-2 mr-5">
+                <input
+                    type="text"
+                    placeholder="Name"
+                    className="border rounded px-2 py-1 mr-2 w-[4rem] flex-shrink-0"
+                    value={newProfileName}
+                    onChange={(e) => setNewProfileName(e.target.value)}
+                  />
+                  <input
+                    type="file"
+                    accept="application/json"
+                    className="hidden"
+                    id="file-upload"
+                    onChange={(e) => setNewProfileFile(e.target.files[0])}
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="flex-grow border rounded mr-3 px-2 py-1 bg-gray-100 text-gray-500 flex items-center cursor-pointer"
+                  >
+                    <span className="flex-grow font-normal">{newProfileFile ? newProfileFile.name : "File path"}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="icon icon-tabler icons-tabler-outline icon-tabler-folder"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+                    </svg>
+                  </label>
+                </div>
+                <div className="flex justify-center mt-4">
+                  
+                  <Button label={'Add Profile'} onClick={handleAddProfile}/>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
