@@ -201,7 +201,7 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        // formdata.append('fps', float(settings.fps))
+        formdata.append('fps', float(settings.fps))
         convert_video_formart(formdata, str_name("LEFT", ".avi"))
       
         
@@ -225,7 +225,7 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        // formdata.append('fps', float(settings.fps))
+        formdata.append('fps', float(settings.fps))
         convert_video_formart(formdata, str_name("RIGHT", ".avi"))
         
         rightVideoChunks.current = []; // Clear chunks
