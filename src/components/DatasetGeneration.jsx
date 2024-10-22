@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
-import { convert_video_formart, process_video_from_images, send_video_images } from '../shared/apiService';
+import { convert_video_formart, convert_video_promise, process_video_from_images, send_video_images } from '../shared/apiService';
+import InProgressToast, { showInProgressToast } from './utils/InProgressToast';
+import { toast } from 'react-toastify';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -201,7 +203,7 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        formdata.append('fps', float(settings.fps))
+        formdata.append('fps', settings.fps)
         convert_video_formart(formdata, str_name("LEFT", ".avi"))
       
         
@@ -225,8 +227,40 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        formdata.append('fps', float(settings.fps))
+        formdata.append('fps', settings.fps)
         convert_video_formart(formdata, str_name("RIGHT", ".avi"))
+        toast('🦄 Wow so easy!', {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+        // const res = convert_video_promise(formdata)
+        // .then(async (res) => {
+        //   const blob = await res.blob()
+        //   const url = window.URL.createObjectURL(blob);
+        //   const a = document.createElement('a');
+        //   a.href = url;
+      
+        //   a.download = str_name("RIGHT", ".avi");
+        //   document.body.appendChild(a);
+        //   a.click();
+        //   a.remove();
+        //   window.URL.revokeObjectURL(url);
+        // })
+        // toast.promise(
+        //   res,
+        //   {
+        //     pending: 'Converting video...',
+        //     success: 'Video converted, donwloading... 👌',
+        //     error: 'Something went wrong. 🤯'
+        //   }
+        // )
         
         rightVideoChunks.current = []; // Clear chunks
       };
@@ -235,6 +269,7 @@ const DatasetGeneration = ({ settings }) => {
     }
 
     setIsRecording(false);
+    // showInProgressToast("Convirtiendo video...")
   };
 
   const send_images = async () => {
@@ -347,10 +382,13 @@ const DatasetGeneration = ({ settings }) => {
           label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
           onClick={isRecording ? stopRecording : startRecording}
         />
-
-        <span>{isRecording ? "Grabando" : "No se graba"}</span>
         <Button label={'Capturar'} onClick={captureImage} />
+
+        
       </div>
+      {/* <InProgressToast label={"Convirtiendo videos..."}/> */}
+      {/* <ToastWrapper/> */}
+
     </div>
   );
 };
