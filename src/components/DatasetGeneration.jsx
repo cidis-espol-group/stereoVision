@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 import { convert_video_formart, process_video_from_images, send_video_images } from '../shared/apiService';
-import { float } from 'three/webgpu';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -202,7 +201,7 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        formdata.append('fps', float(settings.fps))
+        // formdata.append('fps', float(settings.fps))
         convert_video_formart(formdata, str_name("LEFT", ".avi"))
       
         
@@ -226,7 +225,7 @@ const DatasetGeneration = ({ settings }) => {
 
         const formdata = new FormData()
         formdata.append("file", leftFile)
-        formdata.append('fps', float(settings.fps))
+        // formdata.append('fps', float(settings.fps))
         convert_video_formart(formdata, str_name("RIGHT", ".avi"))
         
         rightVideoChunks.current = []; // Clear chunks
