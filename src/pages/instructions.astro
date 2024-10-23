@@ -142,7 +142,7 @@ import Layout from '../layouts/Layout.astro';
                   <p class="mb-4">
                       Los perfiles permiten almacenar y gestionar diferentes calibraciones de cámaras de manera ordenada y accesible. Esta funcionalidad es especialmente útil cuando se trabaja con múltiples cámaras o configuraciones de calibración diferentes. Cada perfil representa un conjunto específico de parámetros de calibración que pueden ser aplicados según sea necesario, lo que facilita la reutilización y el manejo de configuraciones complejas.
                   </p>
-                  <img src="/assets/Config.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
+                  <img src="/assets/Config2.png" alt="Image_capure_modes" class="mb-4 mx-auto border shadow-md rounded-xl" />
 
                   <h3 class="text-xl font-semibold mb-2">Creación de Nuevos Perfiles</h3>
                   <p class="mb-4">
@@ -450,10 +450,41 @@ import Layout from '../layouts/Layout.astro';
           
         
             <!-- Sección: Extracción de Características -->
-            <section id="feature-extraction" class="mb-8">
-                <h2 class="text-2xl font-bold my-2">Extracción de Características</h2>
-                <p class="mb-4">Descripción detallada de la extracción de características...</p>
-            </section>
+        <section id="feature-extraction" class="mb-8">
+            <h2 class="text-2xl font-semibold mb-2">Extracción de Características</h2>
+            <p class="mb-4">
+                El módulo de <strong>Extracción de Características</strong> está diseñado para analizar imágenes estéreo y obtener información detallada sobre las personas presentes en la escena. Puedes utilizar imágenes previamente cargadas o capturadas en vivo para llevar a cabo el análisis. Este módulo se enfoca en la extracción de características clave de las personas identificadas, así como su disposición espacial y orientación dentro del grupo.
+            </p>
+            <p class="mb-4">
+                Sigue los pasos mencionados previamente en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a> para subir las imágenes o capturar una en vivo. Una vez configuradas las opciones necesarias, haz clic en el botón <strong>Continue</strong> para iniciar el proceso de extracción.
+            </p>
+            <img src="/assets/feature-extraction1.png" alt="Extracción de Características" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+            <p class="mb-4">
+                El sistema identificará y extraerá una serie de características de las personas en la escena, incluyendo:
+            </p>
+            <ul class="list-disc list-inside mb-4">
+                <li><strong>Cantidad de personas:</strong> El número total de personas detectadas en la escena.</li>
+                <li><strong>Forma del grupo:</strong> La disposición general del grupo de personas, que puede tomar las formas de "C", "I" o "L", dependiendo de su distribución espacial.</li>
+                <li><strong>Keypoints:</strong> Los puntos clave del cuerpo de cada persona identificada, tales como la nariz, ojos, hombros, codos, muñecas, caderas, rodillas y tobillos.</li>
+                <li><strong>Centroide de cada persona:</strong> El centro geométrico de cada persona, calculado a partir de sus keypoints.</li>
+                <li><strong>Orientación del cuerpo:</strong> El vector normal que indica la dirección hacia la cual está orientado el cuerpo de cada persona.</li>
+                <li><strong>Orientación de la cabeza:</strong> El vector normal que indica la dirección de la cabeza de cada persona, proporcionando una estimación de dónde están mirando.</li>
+                <li><strong>Centroide del grupo:</strong> El centro geométrico de todo el grupo de personas, calculado a partir de los centroides individuales.</li>
+                <li><strong>Orientación del grupo:</strong> La orientación general del grupo, determinada por el promedio de las orientaciones de los cuerpos de las personas en la escena.</li>
+                <li><strong>Altura de cada persona:</strong> La altura estimada de cada persona presente en la escena.</li>
+            </ul>
+            <img src="/assets/feature-extraction2.png" alt="Extracción de Características Detallada" class="mb-4 mx-auto border shadow-md rounded-xl" />
+
+            <p class="mb-4">
+                Cada persona en la escena será resaltada con un color identificativo diferente, lo que facilita la visualización de los keypoints y la orientación de cada individuo. Además, podrás inspeccionar las características extraídas directamente en la interfaz, lo que te permitirá tener un control más preciso sobre los datos obtenidos.
+            </p>
+            <p class="mb-4">
+                Al finalizar el proceso de extracción, podrás descargar los resultados en un archivo que incluye los datos de los keypoints, orientaciones, centroides y más, facilitando su uso para análisis posteriores o integración en otros sistemas.
+            </p>
+        </section>
+
+
         </div>
     </main>
 </Layout>
