@@ -278,37 +278,6 @@ export const process_video_from_images =  async (data) => {
   }  
 };
 
-// export const convert_video_formart =  async (data) => {
-//   const url = base + "convert-video/";
-
-//   try {
-//     const response = await fetch(url, {
-//       method: 'POST',
-//       body: data,
-//       headers: {
-//         'Authorization': `Bearer ${apiKey}`,
-//         'ngrok-skip-browser-warning': 'any'
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throwError(response)
-//     } 
-
-//     const jsonResponse = await response.json();
-//     console.log(jsonResponse);
-    
-//     responseStore.set(jsonResponse);
-//     // showContentStore.set(true); 
-//     loadingStore.set(false)
-    
-//   } catch (error) {
-//     console.error('Error in fetch:', error);
-//     loadingStore.set(false);
-//     showVisualStore.set(false)
-//   }  
-// };
-
 export const convert_video_formart = async (data, filename = "video.avi") => {
   const url = base + "convert_video/";
   
@@ -337,6 +306,25 @@ export const convert_video_formart = async (data, filename = "video.avi") => {
     .catch(error => {
       console.error('There was an error downloading the file:', error);
     });
+};
+
+export const convert_video_promise = async (data) => {
+  const url = base + "convert_video/";
+  
+    fetch(url, {
+      method: 'POST',
+      body: data,
+    })
+    // .then(async response => {
+    //   if (!response.ok) {
+    //     throw new Error(`Network response was not ok: ${response.statusText}`);
+    //   }
+    //   const res = await response;
+    //   return res;
+    // })
+    // .catch(error => {
+    //   console.error('There was an error downloading the file:', error);
+    // });
 };
 
 export const fetchProfiles = async () => {
