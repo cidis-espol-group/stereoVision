@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from './utils/Button';
 import { leftImgPreview, rightImgPreview } from '../shared/imagesStore';
 import { convert_video_formart, convert_video_promise, process_video_from_images, send_video_images } from '../shared/apiService';
-import InProgressToast, { showInProgressToast } from './utils/InProgressToast';
-import { toast, ToastContainer } from 'react-toastify';
+import  { showInProgressToast } from './utils/InProgressToast';
+import { ToastContainer } from 'react-toastify';
 
 const DatasetGeneration = ({ settings }) => {
   const videoRef = useRef(null);
@@ -229,7 +229,7 @@ const DatasetGeneration = ({ settings }) => {
         formdata.append("file", leftFile)
         formdata.append('fps', settings.fps)
         convert_video_formart(formdata, str_name("RIGHT", ".avi"))
-        showInProgressToast("Convirtiendo video...")
+        showInProgressToast("Convirtiendo y descragando video, esto puede tardar según la duracion del video. No recargues el navegador.")
         
         rightVideoChunks.current = []; // Clear chunks
       };
@@ -348,10 +348,11 @@ const DatasetGeneration = ({ settings }) => {
       </div>
       <div className="flex justify-center mb-6">
         <Button
-          label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
+          label={isRecording ? 'Stop recording' : 'Start recording'}
           onClick={isRecording ? stopRecording : startRecording}
+          className='mr-3'
         />
-        <Button label={'Capturar'} onClick={captureImage} />
+        <Button label={'Capture'} onClick={captureImage} />
 
         
       </div>
