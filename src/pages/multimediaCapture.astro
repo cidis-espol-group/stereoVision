@@ -5,6 +5,7 @@ import LiveSettings from '../components/LiveSettings';
 import Tabs from '../components/Tabs';
 import CloudVisualization from '../layouts/CloudVisualization';
 import Layout from '../layouts/Layout.astro';
+// import MultimediaCapture from '../components/MultimediaCapture';
 
 let settings = { 
     fps: '30', 
@@ -22,6 +23,7 @@ const handleContinue = () => {
         <!-- <LiveSettings onContinue={handleContinue} client:load/> -->
 
         <DatasetGeneration settings={settings} client:load/>
+         <!-- <MultimediaCapture client:load/> -->
     </div>
 
 </Layout>
