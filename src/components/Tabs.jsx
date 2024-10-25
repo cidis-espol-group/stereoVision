@@ -11,7 +11,7 @@ const Tabs = ({ module }) => {
   const tabs = ['LIVE', 'FILE'];
 
   //TODO: Revisar si la variable settins se usa LiveContent
-  const [settings, setSettings] = useState({ fps: '30', resolution: '1920×1080' });
+  const [settings, setSettings] = useState({ fps: '30', resolution: '1920x1080' });
 
   const activeTab = useStore(activeTabStore);
   const showContent = useStore(showContentStore);
