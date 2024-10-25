@@ -8,49 +8,67 @@ import Layout from '../layouts/Layout.astro';
     <main class="flex flex-row min-h-[75vh] ">
         <!-- Menú lateral -->
         <div class="hidden lg:block z-20 left-0 w-[25rem] pt-10 pb-10 pl-8 pr-6 border">
-          <nav id="nav" class="lg:text-sm lg:leading-6 sticky top-10">
-              <ul class="space-y-6">
-                  <li>
-                      <a id="link-configuraciones-perfiles" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-perfiles">
-                          Configuraciones y Perfiles
-                      </a>
-                      
-                      <ul class="pl-4 space-y-2">
-                          <li>
-                              <a id="link-configuraciones-comunes" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-comunes">
-                                  Configuraciones Comunes
-                              </a>
-                          </li>
-                          <li>
-                              <a id="link-profiles" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#profiles">
-                                  Perfiles
-                              </a>
-                          </li>
-                      </ul>
-                  </li>
-                  <li>
-                      <a id="link-height-estimation" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#height-estimation">
-                          Estimación de Altura
-                      </a>
-                  </li>
-                  <li>
-                      <a id="link-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#dense-point-cloud">
-                          Nube de Puntos Densa
-                      </a>
-                  </li>
-                  <li>
-                      <a id="link-no-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#no-dense-point-cloud">
-                          Nube de Puntos No Densa
-                      </a>
-                  </li>
-                  <li>
-                      <a id="link-feature-extraction" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#feature-extraction">
-                          Extracción de Características
-                      </a>
-                  </li>
-              </ul>
-          </nav>
-      </div>
+            <nav id="nav" class="lg:text-sm lg:leading-6 sticky top-10">
+            <ul class="space-y-6">
+                <li>
+                <a id="link-configuraciones-perfiles" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-perfiles">
+                    Configuraciones y Perfiles
+                </a>
+        
+                <ul class="pl-4 space-y-2">
+                    <li>
+                    <a id="link-configuraciones-comunes" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#configuraciones-comunes">
+                        Configuraciones Comunes
+                    </a>
+                    </li>
+                    <li>
+                    <a id="link-profiles" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#profiles">
+                        Perfiles
+                    </a>
+                    </li>
+                </ul>
+                </li>
+        
+                <li>
+                <a id="link-height-estimation" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#height-estimation">
+                    Estimación de Altura
+                </a>
+                
+                <ul class="pl-4 space-y-2">
+                    <li>
+                    <a id="link-body-keypoints-height" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#body-keypoints-height">
+                        Body Keypoints Height Estimation
+                    </a>
+                    </li>
+                    <li>
+                    <a id="link-facial-features-height" class="group flex items-center lg:text-sm lg:leading-6 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#facial-features-height">
+                        Facial Features Height Estimation
+                    </a>
+                    </li>
+                </ul>
+                </li>
+        
+                <li>
+                <a id="link-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#dense-point-cloud">
+                    Nube de Puntos Densa
+                </a>
+                </li>
+        
+                <li>
+                <a id="link-no-dense-point-cloud" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#no-dense-point-cloud">
+                    Nube de Puntos No Densa
+                </a>
+                </li>
+        
+                <li>
+                <a id="link-feature-extraction" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#feature-extraction">
+                    Extracción de Características
+                </a>
+                </li>
+            </ul>
+            </nav>
+        </div>
+  
 
         <div class="flex-grow p-8">
             <h1 class="text-3xl font-bold mb-4">Instructivo de Uso</h1>
@@ -330,26 +348,55 @@ import Layout from '../layouts/Layout.astro';
 
             <!-- Sección: Estimación de Altura -->
             <section id="height-estimation" class="mb-8">
-                <h2 class="text-2xl font-semibold mb-2">Estimación de Altura</h2>
+                <h2 class="text-2xl font-bold my-2">Estimación de Altura</h2>
                 <p class="mb-4">
-                    El módulo de <strong>Estimación de Altura</strong> está diseñado para calcular la altura de las personas presentes en una escena, junto con la profundidad a la que se encuentran. Este proceso se realiza utilizando imágenes estéreo (izquierda y derecha), lo que permite una estimación precisa y tridimensional.
+                    El módulo de <strong>Estimación de Altura</strong> ofrece dos submodulos para calcular la altura de las personas presentes en una escena. Estos submodulos funcionan de diferentes maneras para lograr el objetivo. 
+                    El primer submodulo utiliza los <strong>keypoints del cuerpo</strong> de la persona identificada, mientras que el segundo se basa en las <strong>facciones del rostro</strong> para realizar la estimación. Dependiendo del tipo de escena y la proximidad de las personas a la cámara, ambos submodulos ofrecen una forma precisa de calcular la altura.
                 </p>
                 <p class="mb-4">
-                    Para comenzar, sigue los pasos previamente mencionados en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a>. Asegúrate de haber cargado correctamente las imágenes izquierda y derecha y haber configurado todos los parámetros según las necesidades de tu proyecto.
+                    Para comenzar con cualquiera de los submodulos, sigue los pasos previamente mencionados en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a>. Asegúrate de haber cargado correctamente las imágenes y ajustado las configuraciones adecuadamente según las necesidades de tu proyecto.
                 </p>
-                <img src="/assets/height1.png" alt="Estimación de Altura" class="mb-4 mx-auto border shadow-md rounded-xl" />
-
-                <p class="mb-4">
-                    Una vez que las imágenes estén listas y las configuraciones hayan sido ajustadas, podrás proceder con la estimación de altura. Haz clic en el botón <strong>Continue</strong> para iniciar el proceso. El sistema calculará automáticamente la altura de las personas en la escena, utilizando los algoritmos de disparidad y profundidad aplicados a las imágenes cargadas.
-                </p>
-                <img src="/assets/height2.png" alt="Resultados de Estimación de Altura" class="mb-4 mx-auto border shadow-md rounded-xl" />
-
-                <p class="mb-4">
-                    El resultado de la estimación incluirá la altura de cada persona identificada, así como la distancia a la que se encuentran desde el punto de vista de la cámara. Estos datos serán presentados en la interfaz en una tabla independiente para cada metrica.
-                </p>
-
-                
+                <img src="/assets/height_overview.png" alt="Estimación de Altura" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                <!-- Submodulo 1: Estimación de Altura usando Keypoints del Cuerpo -->
+                <section id="body-keypoints-height" class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-2">Body Keypoints Height Estimation</h3>
+                    <p class="mb-4">
+                        En este submodulo, se calcula la altura de la persona en base a los <strong>keypoints</strong> que definen las articulaciones y partes del cuerpo como la cabeza, los hombros, las caderas, entre otros. 
+                        Este método permite una estimación precisa en escenas donde la persona completa es visible.
+                    </p>
+                    <img src="/assets/body_keypoints.png" alt="Estimación de Altura con Keypoints del Cuerpo" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                    <p class="mb-4">
+                        Una vez que las imágenes estén listas y las configuraciones hayan sido ajustadas, podrás proceder con la estimación de altura. Haz clic en el botón <strong>Continue</strong> para iniciar el proceso. El sistema calculará automáticamente la altura de las personas en la escena utilizando los algoritmos de disparidad y profundidad aplicados a las imágenes cargadas.
+                    </p>
+                    <img src="/assets/body_height_results.png" alt="Resultados de Estimación de Altura con Keypoints" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                    <p class="mb-4">
+                        El resultado de la estimación incluirá la altura de cada persona identificada, así como la distancia a la que se encuentran desde el punto de vista de la cámara. Estos datos serán presentados en la interfaz en una tabla.
+                    </p>
+                </section>
+            
+                <!-- Submodulo 2: Estimación de Altura usando Facciones del Rostro -->
+                <section id="facial-features-height" class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-2">Facial Features Height Estimation</h3>
+                    <p class="mb-4">
+                        Este submodulo se basa en las <strong>facciones del rostro</strong> para estimar la altura de la persona. Se utiliza el tamaño de la cabeza, derivado de las proporciones faciales, como base para calcular la altura total de la persona. 
+                        La medida del tamaño de la cabeza, multiplicada por un factor de 8 (ya que la altura de una persona es aproximadamente 8 veces el tamaño de su cabeza), permite obtener la altura estimada.
+                    </p>
+                    <img src="/assets/facial_features.png" alt="Estimación de Altura con Facciones del Rostro" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                    <p class="mb-4">
+                        Es importante tener en cuenta que este método solo funciona correctamente para una persona a la vez y se recomienda que los ojos de la persona estén alineados con el centro óptico de la cámara. Además, este submodulo requiere que la persona esté cerca de la cámara, preferiblemente a menos de un metro, y que la imagen capture al menos la parte superior de los hombros.
+                    </p>
+                    <img src="/assets/facial_height_results.png" alt="Resultados de Estimación de Altura con Facciones del Rostro" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                    <p class="mb-4">
+                        Al igual que en el submodulo anterior, los resultados mostrarán la altura estimada de la persona y la profundidad a la que se encuentra. Sin embargo, en este caso solo funcionará para una persona a la vez.
+                    </p>
+                </section>
             </section>
+            
 
         
             <!-- Sección: Nube de Puntos Densa -->
@@ -451,7 +498,7 @@ import Layout from '../layouts/Layout.astro';
         
             <!-- Sección: Extracción de Características -->
         <section id="feature-extraction" class="mb-8">
-            <h2 class="text-2xl font-semibold mb-2">Extracción de Características</h2>
+            <h2 class="text-2xl font-bold my-2">Extracción de Características</h2>
             <p class="mb-4">
                 El módulo de <strong>Extracción de Características</strong> está diseñado para analizar imágenes estéreo y obtener información detallada sobre las personas presentes en la escena. Puedes utilizar imágenes previamente cargadas o capturadas en vivo para llevar a cabo el análisis. Este módulo se enfoca en la extracción de características clave de las personas identificadas, así como su disposición espacial y orientación dentro del grupo.
             </p>
