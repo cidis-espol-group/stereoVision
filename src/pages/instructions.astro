@@ -29,6 +29,13 @@ import Layout from '../layouts/Layout.astro';
                 </ul>
                 </li>
         
+                <!-- Nueva sección añadida -->
+                <li>
+                <a id="link-stereovision-dataset" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#stereovision-dataset">
+                    Generación de Datasets de Estereovisión
+                </a>
+                </li>
+        
                 <li>
                 <a id="link-height-estimation" class="group flex items-center lg:text-sm lg:leading-6 mb-4 font-medium hover:text-white hover:bg-[#4E99A8] rounded-md p-2" href="#height-estimation">
                     Estimación de Altura
@@ -68,6 +75,7 @@ import Layout from '../layouts/Layout.astro';
             </ul>
             </nav>
         </div>
+  
   
 
         <div class="flex-grow p-8">
@@ -343,8 +351,44 @@ import Layout from '../layouts/Layout.astro';
 
               </section>
               
-              
             </section>
+
+            <section id="stereovision-dataset" class="mb-8">
+                <h2 class="text-2xl font-bold my-2">Generación de Datasets de Estereovisión</h2>
+                
+                <p class="mb-4">
+                    El módulo de <strong>Generación de Datasets de Estereovisión</strong> permite la captura y grabación de imágenes y videos con cámaras estereoscópicas, etiquetando automáticamente los archivos con un formato estándar que asegura la correcta organización y uso de los datos. Los videos se almacenan en formato <strong>AVI</strong> y las imágenes en formato <strong>PNG</strong>, evitando cualquier pérdida de calidad por compresión.
+                </p>
+            
+                <p class="mb-4">
+                    Antes de comenzar, se debe configurar el perfil de calibración, junto con la resolución de la cámara y el ajuste de la tasa de cuadros por segundo (FPS). Estas configuraciones son las mismas que se encuentran en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a>. Una vez hecho esto, se podrá acceder a la cámara para iniciar las capturas o grabaciones.
+                </p>
+            
+                <img src="/assets/LIVE.png" alt="Configuración del Dataset" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                <p class="mb-4">
+                    En la interfaz principal de la cámara, se presentan dos botones clave: uno para tomar capturas instantáneas y otro para grabar videos. Ambos se etiquetarán de manera automática siguiendo el formato: <strong>día_mes_año_hora_minuto_segundo_LEFT</strong> o <strong>_RIGHT</strong>, dependiendo de la cámara correspondiente.
+                </p>
+            
+                <img src="/assets/dataset_module1.png" alt="Pantalla de captura" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                <h3 class="text-xl font-semibold mb-2">Capturas Instantáneas</h3>
+                <p class="mb-4">
+                    Al hacer clic en el botón de captura, el sistema tomará dos imágenes al mismo tiempo (una de la cámara izquierda y otra de la cámara derecha). Las imágenes se guardarán de inmediato en formato <strong>PNG</strong>, etiquetadas con el nombre de la cámara (LEFT o RIGHT) y la fecha y hora exacta de la captura.
+                </p>
+            
+                <h3 class="text-xl font-semibold mb-2">Grabación de Videos</h3>
+                <p class="mb-4">
+                    Al hacer clic en el botón de grabación, se iniciará la grabación del video utilizando las dos cámaras (izquierda y derecha). Una vez finalizada la grabación, el sistema tomará unos momentos para procesar el video y convertirlo del formato <strong>WEBM</strong> (soportado por el navegador) a <strong>AVI</strong>, asegurando la máxima compatibilidad y calidad. Los videos se etiquetarán de manera similar a las imágenes, con el formato estándar de fecha, hora y cámara.
+                </p>
+                <img src="/assets/loading_video.png" alt="Grabación de videos" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            
+                <p class="mb-4">
+                    Después de finalizar el proceso de conversión, el video y las imágenes estarán disponibles para su descarga, manteniendo siempre el formato correcto para su uso en proyectos de estereovisión.
+                </p>
+            
+            </section>
+            
 
             <!-- Sección: Estimación de Altura -->
             <section id="height-estimation" class="mb-8">
@@ -433,7 +477,7 @@ import Layout from '../layouts/Layout.astro';
               </ul>
               Para descargar la nube de puntos en el formato deseado, selecciona el formato en el menú desplegable junto al botón <strong>Download</strong> y luego haz clic en el botón para iniciar la descarga.
           </p>
-        </section>
+            </section>
           
         
             <!-- Sección: Nube de Puntos No Densa -->
@@ -493,43 +537,43 @@ import Layout from '../layouts/Layout.astro';
                   lang="js" theme="synthwave-84"/>
                   Cada fila del archivo CSV corresponde a un keypoint identificado, con su respectiva coordenada en la nube de puntos.
               </p>
-          </section>
+            </section>
           
         
             <!-- Sección: Extracción de Características -->
-        <section id="feature-extraction" class="mb-8">
-            <h2 class="text-2xl font-bold my-2">Extracción de Características</h2>
-            <p class="mb-4">
-                El módulo de <strong>Extracción de Características</strong> está diseñado para analizar imágenes estéreo y obtener información detallada sobre las personas presentes en la escena. Puedes utilizar imágenes previamente cargadas o capturadas en vivo para llevar a cabo el análisis. Este módulo se enfoca en la extracción de características clave de las personas identificadas, así como su disposición espacial y orientación dentro del grupo.
-            </p>
-            <p class="mb-4">
-                Sigue los pasos mencionados previamente en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a> para subir las imágenes o capturar una en vivo. Una vez configuradas las opciones necesarias, haz clic en el botón <strong>Continue</strong> para iniciar el proceso de extracción.
-            </p>
-            <img src="/assets/feature-extraction1.png" alt="Extracción de Características" class="mb-4 mx-auto border shadow-md rounded-xl" />
+            <section id="feature-extraction" class="mb-8">
+                <h2 class="text-2xl font-bold my-2">Extracción de Características</h2>
+                <p class="mb-4">
+                    El módulo de <strong>Extracción de Características</strong> está diseñado para analizar imágenes estéreo y obtener información detallada sobre las personas presentes en la escena. Puedes utilizar imágenes previamente cargadas o capturadas en vivo para llevar a cabo el análisis. Este módulo se enfoca en la extracción de características clave de las personas identificadas, así como su disposición espacial y orientación dentro del grupo.
+                </p>
+                <p class="mb-4">
+                    Sigue los pasos mencionados previamente en la sección de <a href="#configuraciones-comunes" class="text-blue-500 underline">Configuraciones Comunes</a> para subir las imágenes o capturar una en vivo. Una vez configuradas las opciones necesarias, haz clic en el botón <strong>Continue</strong> para iniciar el proceso de extracción.
+                </p>
+                <img src="/assets/feature-extraction1.png" alt="Extracción de Características" class="mb-4 mx-auto border shadow-md rounded-xl" />
 
-            <p class="mb-4">
-                El sistema identificará y extraerá una serie de características de las personas en la escena, incluyendo:
-            </p>
-            <ul class="list-disc list-inside mb-4">
-                <li><strong>Cantidad de personas:</strong> El número total de personas detectadas en la escena.</li>
-                <li><strong>Forma del grupo:</strong> La disposición general del grupo de personas, que puede tomar las formas de "C", "I" o "L", dependiendo de su distribución espacial.</li>
-                <li><strong>Keypoints:</strong> Los puntos clave del cuerpo de cada persona identificada, tales como la nariz, ojos, hombros, codos, muñecas, caderas, rodillas y tobillos.</li>
-                <li><strong>Centroide de cada persona:</strong> El centro geométrico de cada persona, calculado a partir de sus keypoints.</li>
-                <li><strong>Orientación del cuerpo:</strong> El vector normal que indica la dirección hacia la cual está orientado el cuerpo de cada persona.</li>
-                <li><strong>Orientación de la cabeza:</strong> El vector normal que indica la dirección de la cabeza de cada persona, proporcionando una estimación de dónde están mirando.</li>
-                <li><strong>Centroide del grupo:</strong> El centro geométrico de todo el grupo de personas, calculado a partir de los centroides individuales.</li>
-                <li><strong>Orientación del grupo:</strong> La orientación general del grupo, determinada por el promedio de las orientaciones de los cuerpos de las personas en la escena.</li>
-                <li><strong>Altura de cada persona:</strong> La altura estimada de cada persona presente en la escena.</li>
-            </ul>
-            <img src="/assets/feature-extraction2.png" alt="Extracción de Características Detallada" class="mb-4 mx-auto border shadow-md rounded-xl" />
+                <p class="mb-4">
+                    El sistema identificará y extraerá una serie de características de las personas en la escena, incluyendo:
+                </p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Cantidad de personas:</strong> El número total de personas detectadas en la escena.</li>
+                    <li><strong>Forma del grupo:</strong> La disposición general del grupo de personas, que puede tomar las formas de "C", "I" o "L", dependiendo de su distribución espacial.</li>
+                    <li><strong>Keypoints:</strong> Los puntos clave del cuerpo de cada persona identificada, tales como la nariz, ojos, hombros, codos, muñecas, caderas, rodillas y tobillos.</li>
+                    <li><strong>Centroide de cada persona:</strong> El centro geométrico de cada persona, calculado a partir de sus keypoints.</li>
+                    <li><strong>Orientación del cuerpo:</strong> El vector normal que indica la dirección hacia la cual está orientado el cuerpo de cada persona.</li>
+                    <li><strong>Orientación de la cabeza:</strong> El vector normal que indica la dirección de la cabeza de cada persona, proporcionando una estimación de dónde están mirando.</li>
+                    <li><strong>Centroide del grupo:</strong> El centro geométrico de todo el grupo de personas, calculado a partir de los centroides individuales.</li>
+                    <li><strong>Orientación del grupo:</strong> La orientación general del grupo, determinada por el promedio de las orientaciones de los cuerpos de las personas en la escena.</li>
+                    <li><strong>Altura de cada persona:</strong> La altura estimada de cada persona presente en la escena.</li>
+                </ul>
+                <img src="/assets/feature-extraction2.png" alt="Extracción de Características Detallada" class="mb-4 mx-auto border shadow-md rounded-xl" />
 
-            <p class="mb-4">
-                Cada persona en la escena será resaltada con un color identificativo diferente, lo que facilita la visualización de los keypoints y la orientación de cada individuo. Además, podrás inspeccionar las características extraídas directamente en la interfaz, lo que te permitirá tener un control más preciso sobre los datos obtenidos.
-            </p>
-            <p class="mb-4">
-                Al finalizar el proceso de extracción, podrás descargar los resultados en un archivo que incluye los datos de los keypoints, orientaciones, centroides y más, facilitando su uso para análisis posteriores o integración en otros sistemas.
-            </p>
-        </section>
+                <p class="mb-4">
+                    Cada persona en la escena será resaltada con un color identificativo diferente, lo que facilita la visualización de los keypoints y la orientación de cada individuo. Además, podrás inspeccionar las características extraídas directamente en la interfaz, lo que te permitirá tener un control más preciso sobre los datos obtenidos.
+                </p>
+                <p class="mb-4">
+                    Al finalizar el proceso de extracción, podrás descargar los resultados en un archivo que incluye los datos de los keypoints, orientaciones, centroides y más, facilitando su uso para análisis posteriores o integración en otros sistemas.
+                </p>
+            </section>
 
 
         </div>
