@@ -70,6 +70,7 @@ const CloudVisualization = ({ title, module }) => {
                                     <PointCloudViewer 
                                         pointCloud={response.point_clouds} 
                                         colors={response.colors} 
+                                        max_coords={response.max_coords}
                                         {...(!isRoi && { size: '4' })} 
                                         {...(!isRoi && { shape: 'circle' })} 
                                     />

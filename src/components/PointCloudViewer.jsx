@@ -5,7 +5,7 @@ import { OrbitControls } from '@react-three/drei';
 import React, { useState, useEffect } from 'react';
 import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader';
 import { loadingStore, showVisualStore } from '../shared/apiService';
-
+import GridCube from './utils/GridCube';
 const createCircularTexture = (color) => {
   const size = 256; // Tamaño de la textura
   const canvas = document.createElement('canvas');
@@ -65,13 +65,12 @@ const PointCloud = ({ points, colors, filePath, position = [0, 0, 0], size= 0.00
   );
 };
 
-function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color}) {
+function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color, max_coords}) {
   useEffect(()=>{
     if (!pointCloud || pointCloud.length == 0) {
       alert('There are no points to show.');
       showVisualStore.set(false)
       loadingStore.set(false)
-      // responseStore.set(null)
       return;
     }
   })
@@ -97,8 +96,12 @@ function PointCloudViewer({ pointCloud, colors, size , filePath , shape, color})
         enableDamping 
         dampingFactor={0.25} 
       />
+      
+      
+      {max_coords && <GridCube limits={max_coords} />}
     </Canvas>
   );
+  
 }
 
 export default PointCloudViewer;

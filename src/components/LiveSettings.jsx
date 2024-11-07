@@ -65,8 +65,8 @@ const LiveSettings = ({ onContinue }) => {
 
   return (
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-center text-2xl font-semibold mb-6">Settings</h2>
-      <div className="flex flex-col items-center">
+      <h2 className="text-center text-2xl font-semibold mb-6 ">Settings</h2>
+      <div className="flex flex-col items-end mx-3.5">
         <Robots
           className={'mb-4'}
           value={profile}
@@ -90,6 +90,7 @@ const LiveSettings = ({ onContinue }) => {
           label={'Continue'} 
           onClick={handleContinue} 
           disabled={!isResolutionValid || !profile || !fps || !resolution} 
+          className={'self-center'}
         />
       </div>
     </div>
