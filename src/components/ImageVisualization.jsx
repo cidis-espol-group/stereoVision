@@ -38,7 +38,7 @@ const ImageVisualization = () =>{
                 </div>
             </div>
 
-            <div className={`flex justify-center my-4 ${tab === 'LIVE' ? 'hidden' : 'visible'}`}>
+            <div className={`flex justify-center my-4 ${tab === 'LIVE' || tab === 'FILE REALSENSE' ? 'hidden' : 'visible'}`}>
                 <Button label={'Restart'} onClick={()=> {
                     showVisualStore.set(false)
                     responseStore.set(null)
