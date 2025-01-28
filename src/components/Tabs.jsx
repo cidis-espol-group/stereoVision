@@ -2,13 +2,14 @@ import React, { useState, useEffect  } from 'react';
 import LiveSettings from './LiveSettings';
 import LiveContent from './LiveContent';
 import FileUpload from './FileUpload';
+import FileUploadReal from './FileUploadReal';
 import { useStore } from '@nanostores/react';
 import { activeTabStore, showContentStore } from '../shared/tabStore';
 import { responseStore } from '../shared/response';
 import { showVisualStore } from '../shared/apiService';
 
 const Tabs = ({ module }) => {
-  const tabs = ['LIVE', 'FILE'];
+  const tabs = ['LIVE', 'FILE', 'FILE REALSENSE'];
 
   //TODO: Revisar si la variable settins se usa LiveContent
   const [settings, setSettings] = useState({ fps: '30', resolution: '1920x1080' });
@@ -22,7 +23,7 @@ const Tabs = ({ module }) => {
   };
 
   return (
-    <div className={`my-10 ${showVisualization && activeTab =='FILE' ? 'hidden': 'visible'}`}>
+    <div className={`my-10 ${showVisualization && (activeTab === 'FILE' || activeTab === 'FILE REALSENSE') ? 'hidden': 'visible'}`}>
       {showContent ? (
         <div className="flex justify-center mb-4">
           {tabs.map((tab, index) => (
@@ -44,8 +45,10 @@ const Tabs = ({ module }) => {
       {showContent ? (
         activeTab === 'LIVE' ? (
           <LiveSettings onContinue={handleContinue} />
-        ) : (
+        ) : activeTab === 'FILE' ? (
           <FileUpload module={module} />
+        ) : (
+          <FileUploadReal module={module} />
         )
       ) : (
         activeTab === 'LIVE' ? (
