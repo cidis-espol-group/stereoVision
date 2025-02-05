@@ -67,21 +67,22 @@ const FileUpload = ({module }) => {
     } else if (!profile) {
       alert('Please select a robot profile.');
       return;
-    } else if (!method && module!='height-estimation-face') {
+    }/* else if (module!='height-estimation-face') {
       alert('Please select a generation method.');
       return;
     }
-    
+    */
     loadingStore.set(true)
     showVisualStore.set(true)
     isRoiStore.set(checkboxes.useRoi)
+    let selectedMethod = "realsense";
     
     let formData = new FormData();
     formData.append('img_left', imgLeft); // leftImageFile es el archivo
     formData.append('img_right', imgRight); // rightImageFile es el archivo
     formData.append('profile_name', profile);
-    if ( module !='height-estimation-face') formData.append('method', method);
-    
+    if ( module !='height-estimation-face') formData.append('method', selectedMethod);
+    console.log("metodo:",selectedMethod);
     sendPostRequest(formData, module, checkboxes)
     setTimeout(() => {
       scrollToSection.set('visualization')
@@ -96,12 +97,12 @@ const FileUpload = ({module }) => {
         <Robots onChange={e => setProfile(e.target.value)} />
         {module !== 'height-estimation-face' && (
           <>
-            <Dropdown
+            {/*<Dropdown
               label="Method"
               options={['SGBM', 'WLS-SGBM', 'RAFT', 'SELECTIVE']}
               value={method}
               onChange={e => setMethod(e.target.value)}
-            />
+            />*/}
             <Checkbox
               label="Use max disparity"
               checked={checkboxes.useMaxDisp}

@@ -13,13 +13,13 @@ const Capture = ({}) => {
 
     return (
         <>
-            <div class="flex justify-center mb-4 my-10">
+            
                 {!showCapture ? (
                     <LiveSettings onContinue={handleContinue}/>
                 ) : (
                     <DatasetGeneration settings={settings}/>
                 )}
-            </div>
+            
         </>
     )
 }

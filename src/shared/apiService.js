@@ -9,10 +9,10 @@ export const showVisualStore = atom(false)
 export const isRoiStore = atom(true)
 
 // // Exposed host
-const base = 'http://192.168.1.8:8000/';
+// const base = 'http://192.168.1.8:8000/';
 
 // Localhost
-// const base = 'http://127.0.0.1:8000/';
+const base = 'http://127.0.0.1:8000/';
 
 const getURL = (module, parameters) => {
     let generatedUrl = '';

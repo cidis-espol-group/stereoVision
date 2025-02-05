@@ -197,8 +197,32 @@ class Person {
   }
 }
 
+function multiplicarPor100(json) {
+  // Recorremos cada propiedad del objeto JSON
+  for (let key in json) {
+    // Si es un número, multiplicamos por 100
+    if (typeof json[key] === 'number') {
+      json[key] *= 100;
+    }
+    // Si es un arreglo, recorremos cada elemento y multiplicamos por 100 si es un número
+    else if (Array.isArray(json[key])) {
+      json[key] = json[key].map(value => typeof value === 'number' ? value * 100 : value);
+    }
+    // Si es un objeto (puede ser un sub-objeto o dentro de "persons"), llamamos recursivamente
+    else if (typeof json[key] === 'object' && json[key] !== null) {
+      console.log(key);
+      
+      multiplicarPor100(json[key]);
+    }
+  }
+  return json;
+}
+
 class Feature {
   constructor(data, visualizationConfig) {
+    data = multiplicarPor100(data);
+    console.log(data);
+    
     this.persons = Object.values(data.persons).map(
       (personData, index) => new Person(personData, get_color(index), visualizationConfig) 
     );
@@ -285,7 +309,7 @@ const Features = ({features, max_coords}) => {
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
 
-      <group scale={[-1, -1, 1]}>
+      <group scale={[-0.2, -0.2, 0.2]}>
         {feature.render()}
       </group>
 
