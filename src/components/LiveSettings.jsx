@@ -64,7 +64,7 @@ const LiveSettings = ({ onContinue }) => {
   };
 
   return (
-    <div class="flex justify-center mb-4 my-10">
+    <div className="flex justify-center mb-4 my-10">
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <h2 className="text-center text-2xl font-semibold mb-6 ">Settings</h2>
       <div className="flex flex-col items-end mx-3.5">

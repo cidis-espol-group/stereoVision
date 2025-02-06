@@ -32,13 +32,8 @@ const CloudVisualization = ({ title, module }) => {
           scrollToSection.set(null); // Resetea el store después de hacer el scroll
         }
         console.log('cloud visualization:',module);
-        
-        
     }, [target]);
 
-    
-
-    
     return(
         <div className={`p-8 ${ showVisualization ? 'visible': 'hidden' }`}>
             <div className="mx-24">
