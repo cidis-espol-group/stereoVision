@@ -25,7 +25,6 @@ const CloudVisualization = ({ title, module }) => {
     const target = useStore(scrollToSection);
     const isRoi = useStore(isRoiStore)
 
-    
     useEffect(() => {
         if (target === 'visualization' && sectionRef.current) {
           sectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -48,7 +47,7 @@ const CloudVisualization = ({ title, module }) => {
                         ) : (
                             <div id="visualization-content">
                                 {module === 'feature-extraction' && (
-                                    <Features features={response.features} max_coords={response.max_coords}/>
+                                        <Features features={response.features} max_coords={response.max_coords} method_used={response.method_used} />
                                     // <Features features={response.features} max_coords={[50.315, 50.941, 356.8]}/>
                                 )}
                                 

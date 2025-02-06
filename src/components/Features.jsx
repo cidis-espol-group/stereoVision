@@ -273,7 +273,7 @@ const AxesHelperWithLabels = ({ size }) => {
   );
 };
 
-const Features = ({features, max_coords}) => {
+const Features = ({features, max_coords, method_used}) => {
   const visualizationConfig = useStore(visualizationConfigStore);
   const feature = new Feature(features, visualizationConfig);
 
@@ -286,9 +286,17 @@ const Features = ({features, max_coords}) => {
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
 
-      <group scale={[-0.2, -0.2, 0.2]}>
-        {feature.render()}
-      </group>
+      {
+        method_used === "realsense"
+          ?
+          <group scale={[-7, -7, 9]}>
+            {feature.render()}
+          </group>
+          :
+          <group scale={[-0.2, -0.2, 0.2]}>
+            {feature.render()}
+          </group>
+      }
 
       {/* <axesHelper args={[25]} /> */}
       {/* <AxesHelperWithLabels size={25} /> */}
